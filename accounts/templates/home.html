@@ -1,0 +1,262 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Job Listings</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #eef2f3;
+                margin: 0;
+                padding: 0;
+            }
+
+            .navbar {
+                background-color: #004085;
+                padding: 15px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: white;
+                position: sticky;
+                top: 0;
+                width: 97%;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            }
+            .navbar a {
+                color: white;
+                text-decoration: none;
+                font-size: 20px;
+                font-weight: bold;
+            }
+            .sign-in {
+                background-color: #ffca28;
+                color: black;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .sign-in:hover {
+                background-color: #ffb300;
+            }
+
+            .filter-container {
+                text-align: center;
+                margin: 20px 0;
+            }
+            select {
+                padding: 10px;
+                margin: 5px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+            }
+
+            .job-list-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                padding: 20px;
+            }
+            .job-container {
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                transition: transform 0.2s;
+            }
+            .job-container:hover {
+                transform: scale(1.05);
+            }
+            .apply-button {
+                background-color: #28a745;
+                color: white;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: bold;
+            }
+            .apply-button:hover {
+                background-color: #218838;
+            }
+
+            .user-info {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.avatar-container {
+    position: relative;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: white;
+    color: black;
+    min-width: 120px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.dropdown-menu a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    display: block;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+        </style>
+    </head>
+    <body>
+        <div class="navbar">
+            <a href="#">WELCOME to placeX</a>
+            <!-- <a href="/auth" class="sign-in">Sign In</a> -->
+
+            <!-- {% if user_logged_in %}
+            <div class="user-info">
+                <span>Welcome {{ user.name }} !</span>
+                <div class="avatar-container" onclick="toggleDropdown()">
+                    <img class="avatar" src="/static/images/thumbnail.webp" alt="Avatar">
+                    <div id="dropdown-menu" class="dropdown-menu">
+                        <a href="{% url 'profile' %}">Profile</a>
+                        <a href="/logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+            {% else %} -->
+            <div class="signup-login">
+                <a href="users/" class="sign-in">Login</a>
+            </div>
+            <!-- {% endif %} -->
+            
+        </div>
+
+        <div class="filter-container">
+            <select id="roleFilter" onchange="filterJobs()">
+                <option value="">Filter by Role</option>
+            </select>
+            <select id="companyFilter" onchange="filterJobs()">
+                <option value="">Filter by Company</option>
+            </select>
+            <select id="locationFilter" onchange="filterJobs()">
+                <option value="">Filter by Location</option>
+            </select>
+        </div>
+
+        <div class="job-list-container" id="job-list"></div>
+
+        <script>
+            const jobs = [
+                {% for job in job_list %}
+                {
+                    job_role: "{{ job.job_role|escapejs }}",
+                    company_name: "{{ job.company_name|escapejs }}",
+                    location: "{{ job.location|escapejs }}",
+                    required_skill: "{{ job.required_skill|escapejs }}",
+                    qualification: "{{ job.qualification|escapejs }}"
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ];
+        
+            function populateFilters() {
+                let roles = new Set(), companies = new Set(), locations = new Set();
+                jobs.forEach(job => {
+                    roles.add(job.job_role);
+                    companies.add(job.company_name);
+                    locations.add(job.location);
+                });
+        
+                function fillDropdown(id, values) {
+                    let select = document.getElementById(id);
+                    values.forEach(value => {
+                        let option = document.createElement("option");
+                        option.value = value;
+                        option.textContent = value;
+                        select.appendChild(option);
+                    });
+                }
+        
+                fillDropdown("roleFilter", roles);
+                fillDropdown("companyFilter", companies);
+                fillDropdown("locationFilter", locations);
+            }
+        
+            function renderJobs(filteredJobs = jobs) {
+                const jobList = document.getElementById("job-list");
+                jobList.innerHTML = filteredJobs.map(job => `
+                    <div class="job-container">
+                        <h2>${job.job_role}</h2>
+                        <p><strong>Company:</strong> ${job.company_name}</p>
+                        <p><strong>Location:</strong> ${job.location}</p>
+                        <p><strong>Required Skills:</strong> ${job.required_skill}</p>
+                        <p><strong>Qualification:</strong> ${job.qualification}</p>
+                        <button class="apply-button" onclick="redirectToSignIn()">Apply</button>
+                    </div>
+                `).join('');
+            }
+        
+            function filterJobs() {
+                let role = document.getElementById("roleFilter").value;
+                let company = document.getElementById("companyFilter").value;
+                let location = document.getElementById("locationFilter").value;
+        
+                let filteredJobs = jobs.filter(job =>
+                    (!role || job.job_role === role) &&
+                    (!company || job.company_name === company) &&
+                    (!location || job.location === location)
+                );
+        
+                renderJobs(filteredJobs);
+            }
+
+            function redirectToSignIn() {
+            window.location.href = "/auth/";
+            }
+
+            function redirectToprofile() {
+            window.location.href = "profile";
+            }
+
+        
+            document.addEventListener("DOMContentLoaded", () => {
+                populateFilters();
+                renderJobs();
+            });
+
+            function toggleDropdown() {
+            const dropdown = document.getElementById("dropdown-menu");
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            }
+
+            document.addEventListener("click", function (e) {
+            const dropdown = document.getElementById("dropdown-menu");
+            const avatarContainer = document.querySelector(".avatar-container");
+            if (dropdown && avatarContainer && !avatarContainer.contains(e.target)) {
+            dropdown.style.display = "none";
+            }
+            });
+        </script>
+    </body>
+    </html>
