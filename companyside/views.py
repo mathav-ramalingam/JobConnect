@@ -14,7 +14,10 @@ def companyDashboard(request):
 
     try:
         company = CompanyRegister.objects.get(id=company_id)
-        context = {'user_logged_in': True, 'company': company}
+        print(f"company : {company}")
+        job = Joblist.objects.filter(company=company) 
+        print(job)
+        context = {'user_logged_in': True, 'company': company, 'jobs': job}
         return render(request, 'comDashboard.html', context)
     except CompanyRegister.DoesNotExist:
         return redirect('com-login')
@@ -61,7 +64,7 @@ def add_job(request):
         messages.success(request, 'Job posted successfully!')
         return redirect('company_dashboard')
     
-    return render(request, 'company/job_form.html')
+    return redirect('company_dashboard')
 
 
 

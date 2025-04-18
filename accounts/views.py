@@ -13,10 +13,10 @@ from django.contrib.auth.hashers import make_password
 # Create your views here.
 def Home(request):
 
-    # if request.method == 'GET':
-    #     joblist = Joblist.objects.all()
-    #     print(joblist)
-    #     return render(request , 'home.html' ,{'job_list':joblist})
+    if request.method == 'GET':
+        joblist = Joblist.objects.all()
+        print(joblist)
+        return render(request , 'home.html' ,{'job_list':joblist})
     
     return render(request, 'home.html')
 
