@@ -17,7 +17,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ccd0e6 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -295,12 +295,11 @@
 
         <!-- Login Container -->
         <div class="form-container">
-
             <div class="cointainer-2 active">
                 <div class="form-cointainer">
                     <div class="form">
                         <h1>Company Login</h1>
-                        <form action="{% url 'com-login' %}" class="form-input" method="POST">
+                        <form action="{% url 'user-login' %}" class="form-input" method="POST">
                             {% csrf_token %}
                             <div class="input-group">
                                 <input type="email" id="Email" name="Email" placeholder="Email" required>
@@ -310,7 +309,7 @@
                                 <i class="fas fa-eye password-toggle" id="togglePassword"></i>
                             </div>
                             {% if error %}
-                            <div style="color: red;">
+                            <div style="color: red; margin-bottom: 10px;">
                                 {{ error }}
                             </div>
                             {% endif %}
@@ -339,19 +338,17 @@
                 <div class="form-cointainer">
                     <div class="form">
                         <h1>Company Signup</h1>
-                        <form action="{% url 'com-register'%}" class="form-input" method="POST">
+                        <form action="{% url 'user-register'%}" class="form-input" method="POST">
                             {% csrf_token %}
 
+                            <div class="input-group">
+                                <input type="text" id="user_name" name="user_name" placeholder="Username" required>
+                            </div>
                             <div class="input-group">
                                 <input type="email" id="Email" name="Email" placeholder="Email" required>
                             </div>
                             <div class="input-group">
-                                <input type="text" id="Company_name" name="Company_name" placeholder="Company Name"
-                                    required>
-                            </div>
-                            <div class="input-group">
-                                <input type="text" id="Company_location" name="Company_location" placeholder="Location"
-                                    required>
+                                <input type="number" id="ph_number" name="ph_number" placeholder="+91" required>
                             </div>
                             <div class="input-group">
                                 <input type="password" id="Password" name="Password" placeholder="Password" required>

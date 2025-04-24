@@ -1,6 +1,5 @@
 from django.shortcuts import render , redirect
 from accounts.models import *
-from django.contrib.auth import logout
 from .models import *
 from django.contrib import messages
 

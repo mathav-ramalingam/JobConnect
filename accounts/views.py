@@ -32,7 +32,7 @@ def comanyRegister(request):
         email = request.POST.get('Email')
         company_name = request.POST.get('Company_name')
         location = request.POST.get('Company_location')
-        password = request.POST.get('Password')
+        password = request.POST.get('Password') 
 
         hashed_password = make_password(password) 
 
@@ -101,3 +101,53 @@ def companyLogin(request):
             return render(request, 'com_auth.html', {'error': 'Invalid email or password'})
 
     return render(request, 'com_auth.html')
+
+
+
+@api_view(['GET','POST'])
+def userRegister(request):
+
+    print("user register")
+    if request.method == 'POST':
+        username = request.POST.get('user_name')
+        email = request.POST.get('Email')
+        ph_number = request.POST.get('ph_number')
+        password = request.POST.get('Password')
+        
+        hashed_password = make_password(password) 
+
+        UserRegister.objects.create(
+            username = username,
+            email = email,
+            phone_number = ph_number,
+            password = hashed_password,
+        )
+        print(f"New User {username} add successfully")
+        return render(request,'user_auth.html')
+
+    return render(request,'user_auth.html') 
+
+
+
+@api_view(['GET','POST'])
+def userLogin(request):
+
+    print("user login")
+    if request.method == 'POST':
+        email = request.POST.get('Email')
+        password = request.POST.get('password')
+        try:
+            user = UserRegister.objects.get(email=email)
+
+            if check_password(password, user.password):
+                request.session['user_id'] = user.id
+
+                return redirect('user_dashboard')
+            
+            else:
+                return render(request, 'user_auth.html', {'error': 'Invalid credentials'})
+            
+        except UserRegister.DoesNotExist:
+            return render(request, 'user_auth.html', {'error': 'Invalid email or password'})
+        
+    return render(request, 'user_auth.html')
