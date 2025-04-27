@@ -8,6 +8,6 @@ urlpatterns = [
 
     path('profile/<str:username>/', profile_view, name='profile_view'),
     path('profile/<str:username>/edit-pers/', edit_personal, name='edit_personal'),
-    # path('profile/<str:username>/edit-acd/', edit_academic, name='dit_academic'),
+    path('profile/<str:username>/edit-acd/', edit_academic, name='edit_academic'),
 
 ]

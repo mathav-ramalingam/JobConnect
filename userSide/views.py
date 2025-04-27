@@ -61,7 +61,7 @@ def profile_view(request, username):
 @api_view(["GET", "POST"])
 def edit_personal(request, username):
 
-    print("hi")
+
     # Fetch the user and their profile
     user = get_object_or_404(UserRegister, username=username)
     user_profile, created = UserProfile.objects.get_or_create(user=user)
@@ -92,4 +92,28 @@ def edit_personal(request, username):
         messages.success(request, 'Personal information updated successfully!')
         return redirect('profile_view', username=user.username)
 
+    return Response({"message": "Use POST method to update data."})
+
+
+
+@api_view(["GET", "POST"])
+def edit_academic(request,username):
+
+    user = get_object_or_404(UserRegister, username = username)
+    user_profile, created= UserProfile.objects.get_or_create(user = user)
+
+    if request.method == "POST":
+
+        user_profile.tenth_percentage = request.POST.get('editTenthPercentage', user_profile.tenth_percentage)
+        user_profile.twelfth_percentage = request.POST.get('editTwelfthPercentage', user_profile.twelfth_percentage)
+        user_profile.diploma_status = request.POST.get('editdiplomaStatus', user_profile.diploma_status)
+        user_profile.ug_cgpa = request.POST.get('editUgCgpa', user_profile.ug_cgpa)
+        user_profile.pg_status = request.POST.get('editpgStatus', user_profile.pg_status)
+        user_profile.backlogs_history = request.POST.get('editBacklogsHistory', user_profile.backlogs_history)
+        user_profile.current_backlogs = request.POST.get('editCurrentBacklogs', user_profile.current_backlogs)
+        user_profile.save()
+
+        messages.success(request, 'Personal information updated successfully!')
+        return redirect('profile_view', username=user.username)
+    
     return Response({"message": "Use POST method to update data."})
