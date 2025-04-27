@@ -1,9 +1,13 @@
-from django.shortcuts import render , redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from accounts.models import *
 from .models import *
 from companyside.models import *
 from accounts.models import *
 from django.contrib import messages
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
 
 
 # Create your views here.
@@ -23,7 +27,69 @@ def userDashboard(request):
     
     except UserRegister.DoesNotExist:
         return redirect('user-login')
+    
 
 def logoutUser(request):
     request.session.flush()  # This will delete all session data, effectively logging out the user
     return redirect('user-login')  
+
+
+@api_view(["GET", "POST"])
+def profile_view(request, username):
+
+    if not username:
+        return redirect('user-login')
+    
+    # # try:
+    # user = get_object_or_404(UserRegister, username=username)
+    # print(f'name : {user}')
+    # user_profile = UserProfile.objects.get(user=user)
+    # print(f"User : {user_profile}")
+    # context = {'user': user_profile}
+    # return render(request, 'profile.html', context)
+    
+    # # except UserProfile.DoesNotExist:
+    # #     return redirect('user-login')
+    
+    user = get_object_or_404(UserRegister, username=username)
+    user_info = UserProfile.objects.get(user=user)
+
+    return render(request, 'profile.html', {'user': user, 'user_info':user_info})
+
+
+
+@api_view(["GET", "POST"])
+def edit_personal(request, username):
+
+    print("hi")
+    # Fetch the user and their profile
+    user = get_object_or_404(UserRegister, username=username)
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == "POST":
+        # Updating UserRegister fields
+        user.username = request.POST.get('editName', user.username)
+        user.email = request.POST.get('editEmail', user.email)
+        user.phone_number = request.POST.get('editPhone', user.phone_number)
+        user.save()
+    
+        # Updating UserProfile fields
+        user_profile.gender = request.POST.get('editGender', user_profile.gender)
+        
+        date_of_birth = request.POST.get('editDob', None)
+        if date_of_birth:  # If there's a value, update it
+            user_profile.date_of_birth = date_of_birth
+        else:
+            # If no date provided, retain the current value (or you can set a default)
+            user_profile.date_of_birth = user_profile.date_of_birth or None
+
+        user_profile.location = request.POST.get('editlocation', user_profile.location)
+        user_profile.about_me = request.POST.get('editabout_me', user_profile.about_me)
+        user_profile.save()
+
+        print(user_profile.about_me)
+
+        messages.success(request, 'Personal information updated successfully!')
+        return redirect('profile_view', username=user.username)
+
+    return Response({"message": "Use POST method to update data."})

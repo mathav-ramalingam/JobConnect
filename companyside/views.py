@@ -2,6 +2,7 @@ from django.shortcuts import render , redirect
 from accounts.models import *
 from .models import *
 from django.contrib import messages
+from rest_framework.decorators import api_view
 
 
 # Create your views here.
@@ -27,6 +28,8 @@ def logoutCompany(request):
     return redirect('com-login')  
 
 
+
+@api_view(["GET", "POST"])
 def add_job(request):
     company_id = request.session.get('company_id')
     if not company_id:
