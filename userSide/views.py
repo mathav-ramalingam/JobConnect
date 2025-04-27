@@ -52,16 +52,14 @@ def profile_view(request, username):
     # #     return redirect('user-login')
     
     user = get_object_or_404(UserRegister, username=username)
-    user_info = UserProfile.objects.get(user=user)
+    user_profile = UserProfile.objects.get(user=user)
 
-    return render(request, 'profile.html', {'user': user, 'user_info':user_info})
+    return render(request, 'profile.html', {'user': user, 'user_profile':user_profile})
 
 
 
 @api_view(["GET", "POST"])
 def edit_personal(request, username):
-
-
     # Fetch the user and their profile
     user = get_object_or_404(UserRegister, username=username)
     user_profile, created = UserProfile.objects.get_or_create(user=user)
@@ -76,7 +74,9 @@ def edit_personal(request, username):
         # Updating UserProfile fields
         user_profile.gender = request.POST.get('editGender', user_profile.gender)
         
-        date_of_birth = request.POST.get('editDob', None)
+        date_of_birth = request.POST.get('editDob')
+
+        print(f'date {date_of_birth}')
         if date_of_birth:  # If there's a value, update it
             user_profile.date_of_birth = date_of_birth
         else:

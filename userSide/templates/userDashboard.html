@@ -6,6 +6,25 @@
     <title>Job Listings</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status.Eligible {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.Not Eligible {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+    </style>
 </head>
 <body class="bg-gray-100 text-gray-900">
 
@@ -85,6 +104,10 @@
             const jobList = document.getElementById("job-list");
             jobList.innerHTML = filteredJobs.map(job => `
                 <div class="bg-white p-6 rounded-lg shadow-lg hover:scale-[1.03] transition-transform">
+
+                    <h2 class="mb-2 align-item:right"><span class="status {% if user_profile.ug_cgpa >= job.CGPA  %} Eligible {% else %} Not Eligible {% endif %} mb-10" >
+                        {% if user_profile.ug_cgpa >= job.CGPA  %} Eligible {% else %} Not Eligible {% endif %}</span> </h2>
+  
                     <h2 class="text-xl font-bold mb-2">${job.job_role}</h2>
                     <p><strong>Company:</strong> ${job.company_name}</p>
                     <p><strong>Location:</strong> ${job.location}</p>

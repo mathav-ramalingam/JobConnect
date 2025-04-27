@@ -71,7 +71,14 @@
     }
 
     /* Cards */
-    .personal-info-card,
+    .personal-info-card
+    {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
     .academic-info {
         background: white;
         border-radius: 12px;
@@ -95,7 +102,7 @@
     .info-list {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: 1.5rem;
     }
 
     .info-item {
@@ -117,7 +124,7 @@
         overflow-x: auto;
         background: white;
         border-radius: 8px;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
@@ -153,7 +160,7 @@
     .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
+        gap: 1.5rem;
     }
 
     /* Buttons */
@@ -365,7 +372,6 @@
                         <span id="location">{{ user_info.location }}</span>
                     </div>
                 </div>
-                
             </div>
 
             <!-- Right Column -->
@@ -495,7 +501,7 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="submit"  class="save-btn">Save Changes</button>
+                    <button type="submit" class="save-btn">Save Changes</button>
                     <button onclick="closeModal('personalInfoModal')" class="cancel-btn">Cancel</button>
                 </div>
             </form>
@@ -509,16 +515,16 @@
                 <h2>Edit Academic Information</h2>
                 <span class="close" onclick="closeModal('academicInfoModal')">&times;</span>
             </div>
-            <form id="academicInfoForm" method="POST" action="{% url 'edit_academic' username=user.username %}" onsubmit="saveacademicInfo(event)">
+            <form id="academicInfoForm" method="POST" action="{% url 'edit_academic' username=user.username %}" onsubmit="saveAcademicInfo(event)">
                 {% csrf_token %}
 
                 <div class="form-group">
                     <label for="editTenthPercentage">10th Percentage:</label>
-                    <input type="text" id="editTenthPercentage" name="editTenthPercentage" value="{{ user_info.tenth_percentage }}%" required>
+                    <input type="text" id="editTenthPercentage" name="editTenthPercentage" value="{{ user_info.tenth_percentage }}" required>
                 </div>
                 <div class="form-group">
                     <label for="editTwelfthPercentage">12th Percentage:</label>
-                    <input type="text" id="editTwelfthPercentage" name="editTwelfthPercentage" value="{{ user_info.twelfth_percentage }}%" required>
+                    <input type="text" id="editTwelfthPercentage" name="editTwelfthPercentage" value="{{ user_info.twelfth_percentage }}" required>
                 </div>
                 <div class="form-group">
                     <label for="editdiplomaStatus">Diploma Status:</label>
@@ -527,7 +533,7 @@
 
                 <div class="form-group">
                     <label for="editUgCgpa">UG CGPA:</label>
-                    <input type="text" id="editUgCgpa" name="editUgCgpa" value="{{ user_info.ug_cgpa }} CGPA" required>
+                    <input type="text" id="editUgCgpa" name="editUgCgpa" value="{{ user_info.ug_cgpa }}" required>
                 </div>
 
                 <div class="form-group">
@@ -538,9 +544,9 @@
                 <div class="form-group">
                     <label for="editBacklogsHistory">Backlogs History:</label>
                     <select id="editBacklogsHistory" name="editBacklogsHistory">
-                        <option value="">Select Yes/NO</option>
+                        <option value="">Select YES/NO</option>
                         <option value="No" {% if user_info.backlogs_history == 'No' %}selected{% endif %}>NO</option>
-                        <option value="Yes" {% if user_info.backlogs_history == 'Yes' %}selected{% endif %}>Yes</option>
+                        <option value="Yes" {% if user_info.backlogs_history == 'Yes' %}selected{% endif %}>YES</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -593,7 +599,7 @@
 
             setTimeout(() => {
                 toast.style.display = 'none';
-            }, 5000);
+            }, 3000);
         }
 
         // Personal Info Form Submission
@@ -605,12 +611,12 @@
             showToast('Personal information updated successfully');
         }
 
-        function saveacademicInfo(event) {
+        function saveAcademicInfo(event) {
             event.preventDefault();
 
             // Close modal and show notification
             closeModal('academicInfoModal');
-            showToast('Personal information updated successfully');
+            showToast('Academic information updated successfully');
         }
 
         // Close modal when clicking outside
