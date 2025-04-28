@@ -367,6 +367,84 @@
             overflow-x: auto;
         }
     }
+
+
+    /* Button glow effect */
+.button-glow {
+    animation: glowButton 1s ease-in-out infinite alternate;
+    border-radius: 8px;
+}
+
+/* Text highlight with gradient effect */
+/* .text-highlight {
+    background-image: linear-gradient(90deg, #ff6a00, #ee0979);
+    background-size: 200% auto;
+    color: white;
+    background-clip: text;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textMove 5s ease-in-out infinite alternate;
+} */
+
+.text-highlight {
+    display: inline-block; /* Ensure text is treated as a block-level element */
+    color: #ee0979; /* Default color for the text */
+    animation: textZoom 3s ease-in-out infinite alternate;
+    
+}
+
+/* Zoom-in/zoom-out animation */
+@keyframes textZoom {
+    0% {
+        transform: scale(1); /* Start at normal size */
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2); /* Zoom in */
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1); /* Zoom out back to normal size */
+        opacity: 1;
+    }
+}
+
+/* Bottom border highlight animation */
+.bottom-glow {
+    position: relative;  /* Ensures the pseudo-element is positioned relative to this container */
+    padding-bottom: 5px;
+    animation: borderPulse 1s ease-in-out infinite alternate;
+}
+
+
+
+/* Glow effect for the bottom border (using pseudo-element) */
+.bottom-glow::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #ff6a00, #ee0979); /* orange-pink glow */
+    animation: glowLine 1.5s ease-in-out infinite alternate;
+    border-radius: 5px;
+}
+
+/* Bottom glow line animation */
+@keyframes glowLine {
+    from {
+        opacity: 0.5;
+        transform: scaleX(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+
 </style>
 
 <body>
@@ -426,7 +504,7 @@
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('academic')">Academic Information</button>
                     <button class="tab-btn" onclick="switchTab('additional')">Additional Information</button>
-                    <button class="tab-btn" onclick="switchTab('resume')">Resume</button>
+                    <button class="tab-btn" id="resume" onclick="switchTab('resume')">Resume</button>
                     <button class="tab-btn" onclick="switchTab('rewards')">Rewards</button>
                     <button class="tab-btn" onclick="switchTab('settings')">Account Settings</button>
                 </div>
@@ -689,6 +767,18 @@
         }
 
 
+        const resumeUploaded = "{{ resume_uploaded|yesno:'true,false' }}" === "true";
+
+        window.onload = function () {
+            if (resumeUploaded) {
+                document.getElementById('noResumeSection').style.display = 'none';
+                document.getElementById('resumeSection').style.display = 'block';
+                document.getElementById('resumeName').innerText = "{{ user_profile.resume.name|default:'' }}";
+            } else {
+                document.getElementById('noResumeSection').style.display = 'block';
+                document.getElementById('resumeSection').style.display = 'none';
+            }
+        }
 
         // Resume Upload Handling
         document.getElementById('resumeUpload').addEventListener('change', handleResumeUpload);
@@ -779,6 +869,41 @@
         document.addEventListener('DOMContentLoaded', () => {
             switchTab('academic');
         });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const highlightField = urlParams.get('highlight');
+
+    if (highlightField) {
+        const element = document.getElementById(highlightField);
+
+        if (element) {
+            if (element.id === "resume") {
+                element.classList.add('text-highlight');
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                setTimeout(() => {
+                    element.classList.remove('text-highlight');
+                }, 3000);
+            } else {
+                const parentInfoItem = element.closest('.info-item');
+                if (parentInfoItem) {
+                    parentInfoItem.classList.add('bottom-glow');
+                    parentInfoItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    setTimeout(() => {
+                        parentInfoItem.classList.remove('bottom-glow');
+                    }, 3000);
+                }
+            }
+        }
+    }
+});
+
+
+
+
     </script>
 </body>
 

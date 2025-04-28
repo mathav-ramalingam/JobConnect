@@ -25,7 +25,7 @@ def userDashboard(request):
         joblist = Joblist.objects.all()
         print(joblist)
 
-        context = {'user_logged_in' : True,'user':user, 'job_list' : joblist, "user_profile":user_profile}
+        context = {'user_logged_in' : True,'user':user, 'job_list' : joblist, "user_profile":user_profile, 'resume_uploaded': bool(user_profile.resume)}
         return render(request, 'userDashboard.html', context)
     
     except UserRegister.DoesNotExist:
@@ -58,7 +58,7 @@ def profile_view(request, username):
     user_profile, created = UserProfile.objects.get_or_create(user=user)
     # print(user_profile)
 
-    return render(request, 'profile.html', {'user': user, 'user_profile':user_profile})
+    return render(request, 'profile.html', {'user': user, 'user_profile':user_profile,'resume_uploaded': bool(user_profile.resume)})
 
 
 

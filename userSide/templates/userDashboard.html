@@ -39,7 +39,8 @@
       <div class="relative cursor-pointer" onclick="toggleDropdown()">
         <img src="/static/images/thumbnail.webp" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white">
         <div id="dropdown-menu" class="hidden absolute right-0 mt-2 bg-white rounded shadow-md min-w-[120px] z-50">
-          <a href="{% url 'profile_view' user.username %}" class="block px-4 py-2 hover:bg-gray-100 text-black">Profile</a>
+          <a href="{% url 'profile_view' user.username %}"
+            class="block px-4 py-2 hover:bg-gray-100 text-black">Profile</a>
           <a href="{% url 'user_logout' %}" class="block px-4 py-2 hover:bg-gray-100 text-black">
             <i class="fas fa-sign-out-alt mr-2 text-black"></i>Logout
           </a>
@@ -76,23 +77,45 @@
       <p><strong>Location:</strong> <span class="job-location"></span></p>
       <p><strong>Required Skills:</strong> <span class="required-skill"></span></p>
       <p><strong>Qualification:</strong> <span class="qualification"></span></p>
-      <button onclick="redirectToSignIn()"
-        class="apply-button mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">Apply</button>
+      <button class="apply-button mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
+        Apply
+    </button>
+    
+
+
     </div>
   </div>
+
+
+  <!-- Apply Modal -->
+  <div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h2 class="text-2xl font-bold mb-4">Apply for <span id="jobRoleTitle"></span></h2>
+      <textarea id="aboutMe" placeholder="Write a short About Me..." class="w-full p-2 border rounded mb-4"
+        rows="4"></textarea>
+      <div class="flex justify-end gap-2">
+        <button onclick="closeApplyModal()"
+          class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+        <button onclick="confirmApplication()"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Confirm Apply</button>
+      </div>
+    </div>
+  </div>
+
+
 
   <script>
     const jobs = [
       {% for job in job_list %}
-      {
-        job_role: "{{ job.job_role|escapejs }}",
+    {
+      job_role: "{{ job.job_role|escapejs }}",
         company_name: "{{ job.company|escapejs }}",
-        location: "{{ job.location|escapejs }}",
-        required_skill: "{{ job.required_skill|escapejs }}",
-        qualification: "{{ job.qualification|escapejs }}",
-        required_cgpa: "{{ job.CGPA }}",
-      } {% if not forloop.last %},{% endif %}
-      {% endfor %}
+          location: "{{ job.location|escapejs }}",
+            required_skill: "{{ job.required_skill|escapejs }}",
+              qualification: "{{ job.qualification|escapejs }}",
+                required_cgpa: "{{ job.CGPA }}",
+      } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
     ];
 
     const user_cgpa = parseFloat("{{ user_profile.ug_cgpa|default:0 }}");
@@ -120,6 +143,12 @@
         statusSpan.classList.add("NotEligible");
         statusSpan.classList.remove("Eligible");
       }
+
+      // 💥 Attach the click event to "Apply" button
+  const applyButton = jobCard.querySelector(".apply-button");
+  applyButton.addEventListener("click", function() {
+    applyForJob(job.job_role, job.required_cgpa);
+  });
 
       return jobCard;
     }
@@ -176,10 +205,6 @@
       });
     }
 
-    function redirectToSignIn() {
-      window.location.href = "/auth/";
-    }
-
     function toggleDropdown() {
       const dropdown = document.getElementById("dropdown-menu");
       dropdown.classList.toggle("hidden");
@@ -199,6 +224,73 @@
       populateFilters();
       renderJobs();
     });
+
+
+
+    const requiredFields = {
+      email: "{{ user.email|default:'' }}",
+      phone: "{{ user.phone_number|default:'' }}",
+      gender: "{{ user_profile.gender|default:'' }}",
+      dob: "{{ user_profile.date_of_birth|default:'' }}",
+      location: "{{ user_profile.location|default:'' }}",
+      tenthPercentage: "{{ user_profile.tenth_percentage|default:'' }}",
+      twelfthPercentage: "{{ user_profile.twelfth_percentage|default:'' }}",
+      ugCgpa: "{{ user_profile.ug_cgpa|default:'' }}",
+      backlogsHistory: "{{ user_profile.backlogs_history|default:'' }}",
+      resume : "{{ user_profile.resume|default:'' }}"
+    };
+
+    function isProfileComplete() {
+      for (const field in requiredFields) {
+        if (!requiredFields[field] || requiredFields[field] === "None") {
+          return field;   
+        }
+      }
+      return true;
+    }
+
+    function redirectToProfile(field) {
+      alert("Please complete your profile first!");
+      window.location.href = `{% url 'profile_view' user.username %}?highlight=${field}`;
+    }
+
+    function applyForJob(jobRole, requiredCgpa) {
+  const missingField = isProfileComplete();
+  if (missingField !== true) {
+    redirectToProfile(missingField);
+  } else {
+    if (user_cgpa >= parseFloat(requiredCgpa)) {
+      openApplyModal(jobRole);
+    } else {
+      alert(`Required CGPA for ${jobRole} is ${requiredCgpa}`);
+    }
+  }
+}
+
+
+
+    function openApplyModal(jobRole) {
+      document.getElementById("jobRoleTitle").textContent = jobRole;
+      document.getElementById("applyModal").classList.remove("hidden");
+    }
+
+    function closeApplyModal() {
+      document.getElementById("applyModal").classList.add("hidden");
+    }
+
+    // When Confirm Apply is clicked
+    function confirmApplication() {
+      const aboutMe = document.getElementById("aboutMe").value.trim();
+      if (!aboutMe) {
+        alert("Please write something about yourself!");
+        return;
+      }
+
+      // You can replace this with an AJAX call to your backend to submit application
+      alert("Application Submitted Successfully!\nAbout Me: " + aboutMe);
+      closeApplyModal();
+    }
+  </script>
   </script>
 </body>
 
