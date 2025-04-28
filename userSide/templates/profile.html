@@ -71,14 +71,13 @@
     }
 
     /* Cards */
-    .personal-info-card
-    {
+    .personal-info-card {
         background: white;
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
+
     .academic-info {
         background: white;
         border-radius: 12px;
@@ -179,8 +178,7 @@
         background: #357abd;
     }
 
-    .close-btn
-    {
+    .close-btn {
         margin-left: auto;
         margin-bottom: auto;
         background: #6ded5a;
@@ -196,7 +194,7 @@
         background: #0ad929;
     }
 
-    .close-btn a{
+    .close-btn a {
         text-decoration-style: none;
     }
 
@@ -298,6 +296,53 @@
         z-index: 1000;
     }
 
+
+    /* Resume Styles */
+    .resume-container {
+        padding: 1.5rem;
+    }
+
+    .resume-section {
+        text-align: center;
+        margin: 2rem 0;
+    }
+
+    .upload-btn,
+    .replace-btn {
+        display: inline-block;
+        background: #4a90e2;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin-top: 1rem;
+    }
+
+    .upload-btn:hover,
+    .replace-btn:hover {
+        background: #357abd;
+    }
+
+    .resume-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .resume-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    #resumeName {
+        font-weight: 500;
+        color: #2d3748;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
         .content-wrapper {
@@ -326,7 +371,7 @@
 
 <body>
     <div class="container">
-        
+
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-info">
@@ -334,11 +379,11 @@
                     class="profile-photo">
                 <div class="profile-text">
                     <h1 id="fullName">{{ user.username }} </h1>
-                    <p>{{ user_info.about_me }}</p>
+                    <p>{{ user_profile.about_me }}</p>
                 </div>
-                <a href="{% url 'user_dashboard' %}"class="close-btn">return to home</a>
+                <a href="{% url 'user_dashboard' %}" class="close-btn">return to home</a>
             </div>
-            
+
         </div>
 
         <!-- Main Content -->
@@ -349,7 +394,7 @@
                     <h2>Personal Information</h2>
                     <button onclick="openModal('personalInfoModal')" class="edit-btn">Edit</button>
                 </div>
-                
+
                 <div class="info-list">
                     <div class="info-item">
                         <span class="label">Email:</span>
@@ -361,15 +406,15 @@
                     </div>
                     <div class="info-item">
                         <span class="label">Gender:</span>
-                        <span id="gender">{{ user_info.gender }}</span>
+                        <span id="gender">{{ user_profile.gender }}</span>
                     </div>
                     <div class="info-item">
                         <span class="label">Date of Birth:</span>
-                        <span id="dob">{{ user_info.date_of_birth }}</span>
+                        <span id="dob">{{ user_profile.date_of_birth }}</span>
                     </div>
                     <div class="info-item">
                         <span class="label">Location:</span>
-                        <span id="location">{{ user_info.location }}</span>
+                        <span id="location">{{ user_profile.location }}</span>
                     </div>
                 </div>
             </div>
@@ -396,31 +441,31 @@
                         <div class="info-grid">
                             <div class="info-item">
                                 <span class="label">10th Percentage:</span>
-                                <span id="tenthPercentage">{{ user_info.tenth_percentage }}%</span>
+                                <span id="tenthPercentage">{{ user_profile.tenth_percentage }} %</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">12th Percentage:</span>
-                                <span id="twelfthPercentage">{{ user_info.twelfth_percentage }}%</span>
+                                <span id="twelfthPercentage">{{ user_profile.twelfth_percentage }} %</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">Diploma Status:</span>
-                                <span id="diplomaStatus">{{ user_info.diploma_status }} </span>
+                                <span id="diplomaStatus">{{ user_profile.diploma_status }} </span>
                             </div>
                             <div class="info-item">
                                 <span class="label">UG CGPA:</span>
-                                <span id="ugCgpa">{{ user_info.ug_cgpa }} CGPA</span>
+                                <span id="ugCgpa">{{ user_profile.ug_cgpa }} CGPA</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">PG Status:</span>
-                                <span id="pgStatus">{{ user_info.pg_status }}</span>
+                                <span id="pgStatus">{{ user_profile.pg_status }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">Backlogs History:</span>
-                                <span id="backlogsHistory">{{ user_info.backlogs_history }}</span>
+                                <span id="backlogsHistory">{{ user_profile.backlogs_history }}</span>
                             </div>
                             <div class="info-item">
                                 <span class="label">Current Backlogs:</span>
-                                <span id="currentBacklogs">{{ user_info.current_backlogs }}</span>
+                                <span id="currentBacklogs">{{ user_profile.current_backlogs }}</span>
                             </div>
 
 
@@ -434,9 +479,26 @@
                 </div>
 
                 <div id="resumeTab" class="tab-content">
-                    <h2>Resume</h2>
-                    <p>No resume uploaded yet.</p>
+                    <div class="resume-container">
+                        <h2>Resume</h2>
+                        <div id="noResumeSection" class="resume-section">
+                            <p>No resume uploaded yet.</p>
+                            <label for="resumeUpload" class="upload-btn">Upload Resume</label>
+                            <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx" style="display: none;">
+                        </div>
+                        <div id="resumeSection" class="resume-section" style="display: none;">
+                            <div class="resume-info">
+                                <span id="resumeName"></span>
+                                <div class="resume-actions">
+                                    <label for="replaceResume" class="replace-btn">Replace</label>
+                                    <input type="file" id="replaceResume" accept=".pdf,.doc,.docx"
+                                        style="display: none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div id="rewardsTab" class="tab-content">
                     <h2>Rewards</h2>
@@ -480,26 +542,27 @@
                     <label for="editGender">Gender:</label>
                     <select id="editGender" name="editGender" required>
                         <option value="">Select Gender</option>
-                        <option value="Male" {% if user_info.gender == 'Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if user_info.gender == 'Female' %}selected{% endif %}>Female</option>
-                        <option value="Other" {% if user_info.gender == 'Other' %}selected{% endif %}>Other</option>
+                        <option value="Male" {% if user_profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if user_profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if user_profile.gender == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="editDob">Date of Birth:</label>
-                    <input type="date" id="editDob" name="editDob" value="{{ user_info.date_of_birth }}" >
+                    <input type="date" id="editDob" name="editDob" value="{{ user_profile.date_of_birth }}">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="editlocation">Location:</label>
-                    <input type="text" id="editlocation"  name="editlocation" value="{{ user_info.location }}" required>
+                    <input type="text" id="editlocation" name="editlocation" value="{{ user_profile.location }}"
+                        required>
                 </div>
                 <div class="form-group">
                     <label for="editabout_me">About Me:</label>
-                    <textarea id="editabout_me" name="editabout_me" >{{ user_info.about_me }}</textarea>
+                    <textarea id="editabout_me" name="editabout_me">{{ user_profile.about_me }}</textarea>
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="submit" class="save-btn">Save Changes</button>
                     <button onclick="closeModal('personalInfoModal')" class="cancel-btn">Cancel</button>
@@ -515,45 +578,51 @@
                 <h2>Edit Academic Information</h2>
                 <span class="close" onclick="closeModal('academicInfoModal')">&times;</span>
             </div>
-            <form id="academicInfoForm" method="POST" action="{% url 'edit_academic' username=user.username %}" onsubmit="saveAcademicInfo(event)">
+            <form id="academicInfoForm" method="POST" action="{% url 'edit_academic' username=user.username %}">
                 {% csrf_token %}
 
                 <div class="form-group">
                     <label for="editTenthPercentage">10th Percentage:</label>
-                    <input type="text" id="editTenthPercentage" name="editTenthPercentage" value="{{ user_info.tenth_percentage }}" required>
+                    <input type="text" id="editTenthPercentage" name="editTenthPercentage"
+                        value="{{ user_profile.tenth_percentage }}" required>
                 </div>
                 <div class="form-group">
                     <label for="editTwelfthPercentage">12th Percentage:</label>
-                    <input type="text" id="editTwelfthPercentage" name="editTwelfthPercentage" value="{{ user_info.twelfth_percentage }}" required>
+                    <input type="text" id="editTwelfthPercentage" name="editTwelfthPercentage"
+                        value="{{ user_profile.twelfth_percentage }}" required>
                 </div>
                 <div class="form-group">
                     <label for="editdiplomaStatus">Diploma Status:</label>
-                    <input type="text" id="editdiplomaStatus" name="editdiplomaStatus" value="{{ user_info.diploma_status }}" required>
+                    <input type="text" id="editdiplomaStatus" name="editdiplomaStatus"
+                        value="{{ user_profile.diploma_status }}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="editUgCgpa">UG CGPA:</label>
-                    <input type="text" id="editUgCgpa" name="editUgCgpa" value="{{ user_info.ug_cgpa }}" required>
+                    <input type="text" id="editUgCgpa" name="editUgCgpa" value="{{ user_profile.ug_cgpa }}" required>
                 </div>
 
                 <div class="form-group">
                     <label for="editpgStatus">PG Status:</label>
-                    <input type="text" id="editpgStatus" name="editpgStatus" value="{{ user_info.pg_Status }}" required>
+                    <input type="text" id="editpgStatus" name="editpgStatus" value="{{ user_profile.pg_status }}"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label for="editBacklogsHistory">Backlogs History:</label>
                     <select id="editBacklogsHistory" name="editBacklogsHistory">
                         <option value="">Select YES/NO</option>
-                        <option value="No" {% if user_info.backlogs_history == 'No' %}selected{% endif %}>NO</option>
-                        <option value="Yes" {% if user_info.backlogs_history == 'Yes' %}selected{% endif %}>YES</option>
+                        <option value="No" {% if user_profile.backlogs_history == 'No' %}selected{% endif %}>NO</option>
+                        <option value="Yes" {% if user_profile.backlogs_history == 'Yes' %}selected{% endif %}>YES
+                        </option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="editCurrentBacklogs">Current Backlogs:</label>
-                    <input type="number" id="editCurrentBacklogs" name="editCurrentBacklogs" value="{{ user_info.current_backlogs }}" min="0">
+                    <input type="number" id="editCurrentBacklogs" name="editCurrentBacklogs"
+                        value="{{ user_profile.current_backlogs }}" min="0">
                 </div>
-                
+
                 <div class="modal-footer">
                     <button type="submit" class="save-btn">Save Changes</button>
                     <button type="button" class="cancel-btn" onclick="closeModal('academicInfoModal')">Cancel</button>
@@ -618,6 +687,86 @@
             closeModal('academicInfoModal');
             showToast('Academic information updated successfully');
         }
+
+
+
+        // Resume Upload Handling
+        document.getElementById('resumeUpload').addEventListener('change', handleResumeUpload);
+        document.getElementById('replaceResume').addEventListener('change', handleResumeUpload);
+
+        function handleResumeUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('resume', file);
+
+
+                fetch("{% url 'upload_resume' username=user.username %}", {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Show the resume section and hide the no-resume section
+                            document.getElementById('noResumeSection').style.display = 'none';
+                            document.getElementById('resumeSection').style.display = 'block';
+
+                            // Update the resume name display
+                            document.getElementById('resumeName').textContent = data.filename;
+
+                            // Show success message
+                            showToast(data.message);
+                        } else {
+                            showToast(data.message, 'error');
+                            console.log(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        showToast('Error uploading resume', 'error');
+                        console.error('Error:', error);
+                    });
+
+                // Reset the file input
+                event.target.value = '';
+            }
+        }
+
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        // function handleResumeUpload(event) {
+        //     const file = event.target.files[0];
+        //     if (file) {
+        //         // Show the resume section and hide the no-resume section
+        //         document.getElementById('noResumeSection').style.display = 'none';
+        //         document.getElementById('resumeSection').style.display = 'block';
+
+        //         // Update the resume name display
+        //         document.getElementById('resumeName').textContent = file.name;
+
+        //         // Show success message
+        //         showToast('Resume uploaded successfully');
+
+        //         // Reset the file input
+        //         event.target.value = '';
+        //     }
+        // }
 
         // Close modal when clicking outside
         window.onclick = function (event) {

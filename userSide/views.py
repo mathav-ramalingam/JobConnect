@@ -6,7 +6,9 @@ from accounts.models import *
 from django.contrib import messages
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+import os
+from django.http import JsonResponse
+from django.conf import settings
 
 
 
@@ -19,10 +21,11 @@ def userDashboard(request):
     
     try:
         user = UserRegister.objects.get(id=user_id)
+        user_profile,  created = UserProfile.objects.get_or_create(user=user)
         joblist = Joblist.objects.all()
         print(joblist)
 
-        context = {'user_logged_in' : True,'user':user, 'job_list' : joblist}
+        context = {'user_logged_in' : True,'user':user, 'job_list' : joblist, "user_profile":user_profile}
         return render(request, 'userDashboard.html', context)
     
     except UserRegister.DoesNotExist:
@@ -52,7 +55,8 @@ def profile_view(request, username):
     # #     return redirect('user-login')
     
     user = get_object_or_404(UserRegister, username=username)
-    user_profile = UserProfile.objects.get(user=user)
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+    # print(user_profile)
 
     return render(request, 'profile.html', {'user': user, 'user_profile':user_profile})
 
@@ -101,6 +105,7 @@ def edit_academic(request,username):
 
     user = get_object_or_404(UserRegister, username = username)
     user_profile, created= UserProfile.objects.get_or_create(user = user)
+    print("edit acedamic")
 
     if request.method == "POST":
 
@@ -113,7 +118,56 @@ def edit_academic(request,username):
         user_profile.current_backlogs = request.POST.get('editCurrentBacklogs', user_profile.current_backlogs)
         user_profile.save()
 
+        print("edit acedamic i if")
+
         messages.success(request, 'Personal information updated successfully!')
         return redirect('profile_view', username=user.username)
     
     return Response({"message": "Use POST method to update data."})
+
+
+def upload_resume(request,username):
+    try:
+        if 'resume' not in request.FILES:
+            return JsonResponse({'status': 'error', 'message': 'No file provided'}, status=400)
+        
+        resume_file = request.FILES['resume']
+        
+        # Validate file type
+        allowed_extensions = ['.pdf', '.doc', '.docx']
+        file_ext = os.path.splitext(resume_file.name)[1].lower()
+        if file_ext not in allowed_extensions:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid file type. Only PDF, DOC, and DOCX files are allowed.'
+            }, status=400)
+        
+        # Validate file size (5MB limit)
+        if resume_file.size > 5 * 1024 * 1024:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'File too large. Maximum size is 5MB.'
+            }, status=400)
+        
+        # Get or create user profile
+        user = get_object_or_404(UserRegister, username = username)
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        
+        # Delete old resume if exists
+        if profile.resume:
+            old_resume_path = os.path.join(settings.MEDIA_ROOT, str(profile.resume))
+            if os.path.exists(old_resume_path):
+                os.remove(old_resume_path)
+        
+        # Save new resume
+        profile.resume = resume_file
+        profile.save()
+        
+        return JsonResponse({'status': 'success','message': 'Resume uploaded successfully','filename': resume_file.name})
+    
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': f'An error occurred: {str(e)}'
+        }, status=500)

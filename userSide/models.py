@@ -50,3 +50,6 @@ class UserProfile(models.Model):
     @property
     def username(self):
         return self.user.username
+    
+
+    
