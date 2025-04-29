@@ -56,9 +56,10 @@ def profile_view(request, username):
     
     user = get_object_or_404(UserRegister, username=username)
     user_profile, created = UserProfile.objects.get_or_create(user=user)
+    applied_jobs = JobApplication.objects.filter(user=user)
     # print(user_profile)
 
-    return render(request, 'profile.html', {'user': user, 'user_profile':user_profile,'resume_uploaded': bool(user_profile.resume)})
+    return render(request, 'profile.html', {'user': user, 'user_profile':user_profile,'resume_uploaded': bool(user_profile.resume), 'applied_jobs':applied_jobs})
 
 
 
@@ -186,7 +187,7 @@ def applyingJob(request):
         job = Joblist.objects.get(id=job_id)  # ✅ Always unique
 
         company_name = job.company
-        
+
         try:
             user = UserRegister.objects.get(id=user_id)
             user_profile = UserProfile.objects.get(user=user)
