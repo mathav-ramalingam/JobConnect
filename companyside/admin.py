@@ -5,3 +5,7 @@ from .models import *
 @admin.register(Joblist)  #model name
 class CatagoryAdmin(admin.ModelAdmin):
     list_display =['company','job_role','job_type','location','CGPA','LPA','required_skill','qualification','experience','description','application_deadline','register_count','posted_at']
+
+@admin.register(JobApplication)
+class JobApplied(admin.ModelAdmin):
+    list_display = ['user','job','company','application_date','status','status_changed_date','resume','feedback']

@@ -10,6 +10,7 @@ urlpatterns = [
     path('profile/<str:username>/edit-pers/', edit_personal, name='edit_personal'),
     path('profile/<str:username>/edit-acd/', edit_academic, name='edit_academic'),
     path('profile/<str:username>/upload-resume/', upload_resume, name='upload_resume'),
+    path('jobapply/',applyingJob, name='apply_for_job')
 ]
 
 

@@ -171,3 +171,40 @@ def upload_resume(request,username):
             'status': 'error',
             'message': f'An error occurred: {str(e)}'
         }, status=500)
+    
+
+
+def applyingJob(request):
+
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('user-login')
+    
+    if request.method == "POST":
+        
+        job_id = request.POST.get('job_id')
+        job = Joblist.objects.get(id=job_id)  # ✅ Always unique
+
+        company_name = job.company
+        
+        try:
+            user = UserRegister.objects.get(id=user_id)
+            user_profile = UserProfile.objects.get(user=user)
+        except (UserRegister.DoesNotExist, UserProfile.DoesNotExist):
+            return redirect('user-login')  # or handle error gracefully
+
+        user_resume = user_profile.resume
+
+        application = JobApplication.objects.create(
+            user=user,  
+            job=job,  # ✅ Proper ForeignKey object
+            company=company_name,
+            resume=user_resume
+        )
+        application.save()
+
+
+        return redirect('user_dashboard')  # or wherever you want after applying
+
+    return redirect('user_dashboard')
+    

@@ -22,3 +22,37 @@ class Joblist(models.Model):
     def __str__(self):
         company_name = self.company.company_name if self.company else "Unknown Company"
         return f"{self.job_role or 'Job Role'} at {company_name}"
+    
+
+
+class JobApplication(models.Model):
+    APPLICATION_STATUS = [
+        ('Applied', 'Applied'),  # Default status when user applies
+        ('Under Review', 'Under Review'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    ]
+    
+    user = models.ForeignKey(UserRegister, on_delete=models.CASCADE, related_name='job_applications',null=True, blank=True)
+    job = models.ForeignKey(Joblist, on_delete=models.CASCADE, related_name='applications',null=True, blank=True)
+    company = models.ForeignKey(CompanyRegister, on_delete=models.CASCADE, related_name='received_applications',null=True, blank=True)
+    
+    # Application details
+    application_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=APPLICATION_STATUS, default='Applied')
+    status_changed_date = models.DateTimeField(auto_now=True)
+
+    resume = models.FileField(upload_to='application_resumes/', blank=True, null=True)
+    
+    # Company feedback
+    feedback = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        unique_together = ('user', 'job')  # Prevent duplicate applications
+        ordering = ['-application_date']
+    
+    def __str__(self):
+        username = self.user.username if self.user else "Unknown User"
+        job_role = self.job.job_role if self.job else "Unknown Role"
+        company_name = self.company.company_name if self.company else "Unknown Company"
+        return f"{username}'s application for {job_role} at {company_name}"

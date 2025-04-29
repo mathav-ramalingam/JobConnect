@@ -87,37 +87,62 @@
   </div>
 
 
-  <!-- Apply Modal -->
-  <div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-      <h2 class="text-2xl font-bold mb-4">Apply for <span id="jobRoleTitle"></span></h2>
-      <textarea id="aboutMe" placeholder="Write a short About Me..." class="w-full p-2 border rounded mb-4"
-        rows="4"></textarea>
-      <div class="flex justify-end gap-2">
-        <button onclick="closeApplyModal()"
-          class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-        <button onclick="confirmApplication()"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Confirm Apply</button>
+ <!-- Apply Modal -->
+<div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h2 class="text-2xl font-bold mb-4">Apply for <span id="jobRoleTitle">Job</span></h2>
+
+    <form id="personalInfoForm" method="POST" action="{% url 'apply_for_job' %}" class="space-y-4">
+      {% csrf_token %}
+
+      <input type="text" name="job_id" id="jobIdField" value="">
+
+
+      <div>
+        <label for="user_name" class="block font-medium">Username:</label>
+        <input type="text" id="user_name" name="user_name" value="{{ user.username }}" disabled
+               class="w-full border border-gray-300 rounded px-3 py-2">
       </div>
-    </div>
+
+      <div>
+        <label for="companyField" class="block font-medium">Company:</label>
+        <input type="text" id="companyField" name="company_name" value="" disabled
+               class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label for="jobRoleField" class="block font-medium">Job Role:</label>
+        <input type="text" id="jobRoleField" name="job_role" value="" 
+               class="w-full border border-gray-300 rounded px-3 py-2">
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="closeApplyModal()"
+                class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+        <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Confirm Apply</button>
+      </div>
+    </form>
   </div>
+</div>
 
 
 
   <script>
+    
     const jobs = [
-      {% for job in job_list %}
-    {
-      job_role: "{{ job.job_role|escapejs }}",
-        company_name: "{{ job.company|escapejs }}",
-          location: "{{ job.location|escapejs }}",
-            required_skill: "{{ job.required_skill|escapejs }}",
-              qualification: "{{ job.qualification|escapejs }}",
-                required_cgpa: "{{ job.CGPA }}",
-      } {% if not forloop.last %}, {% endif %}
-    {% endfor %}
-    ];
-
+  {% for job in job_list %}
+  {
+    job_id: "{{ job.id }}",
+    job_role: "{{ job.job_role|escapejs }}",
+    company_name: "{{ job.company|escapejs }}",
+    location: "{{ job.location|escapejs }}",
+    required_skill: "{{ job.required_skill|escapejs }}",
+    qualification: "{{ job.qualification|escapejs }}",
+    required_cgpa: "{{ job.CGPA }}"
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+];
     const user_cgpa = parseFloat("{{ user_profile.ug_cgpa|default:0 }}");
 
     function createJobCard(job) {
@@ -147,7 +172,8 @@
       // 💥 Attach the click event to "Apply" button
   const applyButton = jobCard.querySelector(".apply-button");
   applyButton.addEventListener("click", function() {
-    applyForJob(job.job_role, job.required_cgpa);
+    console.log(job.job_id);
+    applyForJob(job.job_role, job.required_cgpa, job.company_name, job.job_id);
   });
 
       return jobCard;
@@ -254,13 +280,13 @@
       window.location.href = `{% url 'profile_view' user.username %}?highlight=${field}`;
     }
 
-    function applyForJob(jobRole, requiredCgpa) {
+    function applyForJob(jobRole, requiredCgpa , company , job_id) {
   const missingField = isProfileComplete();
   if (missingField !== true) {
     redirectToProfile(missingField);
   } else {
     if (user_cgpa >= parseFloat(requiredCgpa)) {
-      openApplyModal(jobRole);
+      openApplyModal(jobRole,company, job_id);
     } else {
       alert(`Required CGPA for ${jobRole} is ${requiredCgpa}`);
     }
@@ -269,8 +295,11 @@
 
 
 
-    function openApplyModal(jobRole) {
-      document.getElementById("jobRoleTitle").textContent = jobRole;
+    function openApplyModal(jobRole,company,job_id) {
+      document.getElementById("companyField").value = company;
+      document.getElementById("jobRoleField").value = jobRole;
+      document.getElementById("jobIdField").value = job_id;
+      // document.getElementById("jobRoleTitle").textContent = jobRole;
       document.getElementById("applyModal").classList.remove("hidden");
     }
 
