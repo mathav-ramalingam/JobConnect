@@ -7,4 +7,5 @@ urlpatterns = [
     path('logout/', logoutCompany, name='company_logout'),
 
     path('add-job/', add_job, name='add_job'),
+    path('update-application/<int:Id>',updateApplication,name='update_application')
 ]

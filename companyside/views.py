@@ -1,4 +1,4 @@
-from django.shortcuts import render , redirect
+from django.shortcuts import render , redirect, get_object_or_404
 from accounts.models import *
 from .models import *
 from django.contrib import messages
@@ -17,7 +17,8 @@ def companyDashboard(request):
         print(f"company : {company}")
         job = Joblist.objects.filter(company=company) 
         print(job)
-        context = {'user_logged_in': True, 'company': company, 'jobs': job}
+        applications = JobApplication.objects.filter(company=company)
+        context = {'user_logged_in': True, 'company': company, 'jobs': job , 'applications': applications}
         return render(request, 'comDashboard.html', context)
     except CompanyRegister.DoesNotExist:
         return redirect('com-login')
@@ -68,6 +69,21 @@ def add_job(request):
     
     return redirect('company_dashboard')
 
+
+def updateApplication(request,Id):
+
+
+    if request.method == 'POST':
+
+        application = get_object_or_404(JobApplication, id=Id)
+ 
+        application.status = request.POST.get('status')
+        application.feedback = request.POST.get('feedback')
+        application.save()
+
+        return redirect('company_dashboard')
+    
+    return redirect('company_dashboard')
 
 
 
