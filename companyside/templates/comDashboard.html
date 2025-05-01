@@ -634,7 +634,7 @@
                                     <div class="action-buttons">
                                         <button class="action-btn btn-primary" onclick="viewJob('{{ job.id }}')"><i
                                                 class="fas fa-eye"></i></button>
-                                        <button class="action-btn btn-success" onclick="updateJob('{{ job.id }}')"><i
+                                        <button class="action-btn btn-success" onclick="editJob('{{ job.id }}')"><i
                                                 class="fas fa-edit"></i></button>
                                         <form action="" method="POST" style="display:inline;">
                                             {% csrf_token %}
@@ -880,7 +880,7 @@
                 <div class="form-group">
                     <label>Job Status:</label>
                     <span id="vjobstatus"
-                    class="status {% if vjobstatus == Active %} active {% else %} inactive {% endif %}">
+                        class="status {% if vjobstatus == Active %} active {% else %} inactive {% endif %}">
                     </span>
 
                 </div>
@@ -889,6 +889,109 @@
                 <button class="btn btn-danger" id="closeJobViewBtn">Close</button>
             </div>
 
+        </div>
+    </div>
+
+
+    <!-- Edit Job Modal -->
+    <div class="modal" id="editJobModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Job Job</h2>
+                <button class="close-btn" id="closeeditModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="editjobForm" action="">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="job_role">Job Role:</label>
+                        <input type="text" id="edit_job_role" class="form-control" name="edit_job_role"
+                            placeholder="job_role" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="job_type">Job Type:</label>
+                        <select id="edit_job_type" class="form-control" name="edit_job_type" required>
+                            <option value="">Select Job Type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Internship">Internship</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="edit_location" class="form-control" name="edit_location" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="CGPA">CGPA Requirement:</label>
+                        <input type="text" name="edit_CGPA" id="edit_CGPA" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="LPA">LPA:</label>
+                        <input type="text" id="edit_LPA" class="form-control" name="edit_LPA"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="required_skill">Required Skills:</label>
+                        <textarea name="edit_required_skill" id="edit_required_skill" rows="3" cols="30" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="qualification">Qualification:</label>
+                        <select id="edit_qualification" class="form-control" name="edit_qualification" required>
+                            <option value="">Select Qualification</option>
+                            <option value="B.Tech">B.Tech</option>
+                            <option value="BCA">BCA</option>
+                            <option value="BE">BE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience">Experience:</label>
+                        <select id="edit_experience" class="form-control" name="edit_experience" required>
+                            <option value="">Select Experience</option>
+                            <option value="Fresher">Fresher</option>
+                            <option value="0-2 years">0-2 yearse</option>
+                            <option value="3-5 years">3-5 years</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="description">Job Description:</label>
+                        <textarea name="edit_description" id="edit_description" rows="5"
+                            cols="60"></textarea>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="application_deadline">Application Deadline:</label>
+                        <input type="date" name="edit_application_deadline" id="edit_application_deadline" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register_count ">Register Count:</label>
+                        <input type="number" name="edit_register_count " id="edit_register_count" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="is_active ">Active Status:</label>
+                        <select id="edit_is_active" class="form-control" name="edit_is_active" required>
+                            <option value="True">Active</option>
+                            <option value="False">Inactive</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="canceleditBtn">Cancel</button>
+                <button type="submit" class="btn btn-success" id="saveJobBtn">Post Job</button>
+            </div>
+            </form>
         </div>
     </div>
 
@@ -978,6 +1081,11 @@
         const closeJobModalBtn = document.getElementById('closeJobModalBtn')
         const closeJobViewBtn = document.getElementById('closeJobViewBtn');
 
+
+        const editJobModal = document.getElementById('editJobModal');
+        const canceleditBtn = document.getElementById('canceleditBtn');
+        const closeeditModalBtn = document.getElementById("closeeditModalBtn")
+
         addJobBtn.addEventListener('click', () => {
             addjobmodal.style.display = 'flex';
         });
@@ -998,6 +1106,15 @@
 
         closeJobModalBtn.addEventListener('click', () => {
             viewJobModal.style.display = 'none';
+        });
+
+
+        canceleditBtn.addEventListener('click', () => {
+            editJobModal.style.display = 'none';
+        });
+
+        closeeditModalBtn.addEventListener('click', () => {
+            editJobModal.style.display = 'none';
         });
 
 
@@ -1025,7 +1142,6 @@
                     return response.json();
                 })
                 .then(job => {
-
 
                     // Format date if needed
                     const formattedDate = new Date(job.application_deadline).toLocaleDateString();
@@ -1064,6 +1180,54 @@
                     alert('Error loading job details');
                 });
         }
+
+
+
+        function editJob(jobId) {
+            console.log(jobId)
+
+            fetch(`view-job-details/${jobId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(job => {
+
+                    const formattedDate = new Date(job.application_deadline).toLocaleDateString();
+                    
+                    console.log(`iam : ${formattedDate}`)
+                    // Populate form fields
+                    document.getElementById('edit_job_role').value = job.job_role;
+                    document.getElementById('edit_job_type').value = job.job_type;
+                    document.getElementById('edit_location').value = job.location;
+                    document.getElementById('edit_CGPA').value = job.CGPA;
+                    document.getElementById('edit_LPA').value = job.LPA;
+                    document.getElementById('edit_required_skill').value = job.required_skill;
+                    document.getElementById('edit_qualification').value = job.qualification;
+                    document.getElementById('edit_experience').value = job.experience;
+                    document.getElementById('edit_description').value = job.description;
+                    document.getElementById('edit_application_deadline').value = formattedDate;
+                    document.getElementById('edit_register_count').value = job.register_count
+                    document.getElementById('edit_is_active').value = job.status ? 'True' : 'False';
+
+
+
+
+                    // Update form action
+                    const form = document.getElementById('editjobForm');
+                    form.action = `/edit-job-details/${jobId}/`;
+
+                    // Show modal
+                    editJobModal.style.display = 'flex';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading job details');
+                });
+        }
+
 
         //  // Function to add event listeners to action buttons in a row
         //  function addRowEventListeners(row) {
@@ -1169,7 +1333,7 @@
             // In a real application, you would fetch the current status and feedback
             document.getElementById('applicationId').value = applicationId;
             document.getElementById('statusUpdate').value = "Under Review";
-            document.getElementById('feedbackUpdate').value = "";
+            document.getElementById('feedbackUpdate').value = "hi";
 
             // Set the form action dynamically
             const baseUrl = "{% url 'update_application' 0 %}".replace('0', applicationId);

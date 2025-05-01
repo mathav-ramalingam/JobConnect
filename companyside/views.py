@@ -4,6 +4,7 @@ from accounts.models import *
 from .models import *
 from django.contrib import messages
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 # Create your views here.
@@ -28,6 +29,9 @@ def companyDashboard(request):
 def logoutCompany(request):
     request.session.flush()  # This will delete all session data, effectively logging out the user
     return redirect('com-login')  
+
+
+
 
 
 
@@ -72,22 +76,6 @@ def add_job(request):
 
 
 
-def updateApplication(request,Id):
-
-    if request.method == 'POST':
-
-        application = get_object_or_404(JobApplication, id=Id)
- 
-        application.status = request.POST.get('status')
-        application.feedback = request.POST.get('feedback')
-        application.save()
-
-        return redirect('company_dashboard')
-    
-    return redirect('company_dashboard')
-
-
-
 def viewJobDetails(request,job_id):
 
     job = get_object_or_404(Joblist, id=job_id)
@@ -106,36 +94,74 @@ def viewJobDetails(request,job_id):
         'register_count': job.register_count,
         'status': job.is_active,
     }
-    # print(data)
+    print(data)
     
     return JsonResponse(data)
 
 
-# def edit_job(request, pk):
-#     company_id = request.session.get('company_id')
-#     if not company_id:
-#         return redirect('company_login')  # Redirect to login if no company session
+@api_view(["GET", "POST"])
+def editJobDetails(request, job_id):
 
-#     company = CompanyRegister.objects.get(id=company_id)
-#     job = Joblist.objects.get(pk=pk, company=company)  # Ensure the job belongs to the logged-in company
+    company_id = request.session.get('job_id')
+    if not company_id:
+        return redirect('com-login')  # Redirect to login if no company session
+
+    job = get_object_or_404(Joblist, id=job_id)  # Ensure the job belongs to the logged-in company
+    print("hi")
+
+    if request.method == 'POST':
+
+        job.job_role = request.POST.get('edit_job_role',job.job_role)
+        job.job_type = request.POST.get('edit_job_type',job.job_type)
+        job.location = request.POST.get('edit_location',job.location)
+        job.CGPA = request.POST.get('edit_CGPA',job.CGPA)
+        job.LPA = request.POST.get('edit_LPA',job.LPA)
+        job.required_skill = request.POST.get('edit_required_skill',job.required_skill)
+        job.qualification = request.POST.get('edit_qualification',job.qualification)
+        job.experience = request.POST.get('edit_experience',job.experience)
+        job.description = request.POST.get('edit_description',job.description)
+        job.application_deadline = request.POST.get('edit_application_deadline',job.application_deadline)
+        job.register_count = request.POST.get('edit_register_count',job.register_count)
+        job.is_active = request.POST.get('edit_is_active',job.is_active)
+
+        job.save()
+        messages.success(request, 'Job updated successfully!')
+        return redirect('company_dashboard')
     
-#     if request.method == 'POST':
-#         job.job_role = request.POST.get('job_role')
-#         job.job_type = request.POST.get('job_type')
-#         job.location = request.POST.get('location')
-#         job.CGPA = request.POST.get('CGPA')
-#         job.LPA = request.POST.get('LPA')
-#         job.required_skill = request.POST.get('required_skill')
-#         job.qualification = request.POST.get('qualification')
-#         job.experience = request.POST.get('experience')
-#         job.description = request.POST.get('description')
-#         job.application_deadline = request.POST.get('application_deadline')
+    elif request.method == 'GET':
+        data = {
 
-#         job.save()
-#         messages.success(request, 'Job updated successfully!')
-#         return redirect('company_dashboard')
+        'job_role': job.job_role,
+        'job_type': job.job_type,
+        'location': job.location,
+        'CGPA': str(job.CGPA),
+        'LPA': str(job.LPA),
+        'required_skill': job.required_skill,
+        'qualification': job.qualification,
+        'experience': job.experience,
+        'description': job.description,
+        'application_deadline': job.application_deadline.strftime('%Y-%m-%d'),
+        'register_count': job.register_count,
+        'status': job.is_active,
+        }
+
+        print(data)
+        return JsonResponse(data)
     
-#     return render(request, 'company/job_form.html', {'job': job})
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 
+def updateApplication(request,Id):
+
+    if request.method == 'POST':
+
+        application = get_object_or_404(JobApplication, id=Id)
+ 
+        application.status = request.POST.get('status')
+        application.feedback = request.POST.get('feedback')
+        application.save()
+
+        return redirect('company_dashboard')
+    
+    return redirect('company_dashboard')

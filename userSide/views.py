@@ -65,6 +65,7 @@ def profile_view(request, username):
 
 @api_view(["GET", "POST"])
 def edit_personal(request, username):
+    
     # Fetch the user and their profile
     user = get_object_or_404(UserRegister, username=username)
     user_profile, created = UserProfile.objects.get_or_create(user=user)
