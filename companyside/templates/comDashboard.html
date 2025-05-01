@@ -267,6 +267,27 @@
             background-color: #f8f9fa;
         }
 
+
+        #vjobstatus {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        #vjobstatus.active {
+            background-color: #d4edda;
+            width: 40px;
+            color: #155724;
+        }
+
+        #vjobstatus.inactive {
+            background-color: #f8d7da;
+            width: 40px;
+            color: #721c24;
+        }
+
+
         .status {
             padding: 5px 10px;
             border-radius: 20px;
@@ -337,10 +358,10 @@
             width: 90%;
             max-width: 600px;
             border-radius: 8px;
-            
+
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-        
+
 
         .modal-header {
             padding: 15px 20px;
@@ -451,36 +472,38 @@
         }
 
         .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-    overflow: auto; /* Changed from 'scroll' to 'auto' */
-    padding: 20px; /* Add some padding */
-}
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            /* Changed from 'scroll' to 'auto' */
+            padding: 20px;
+            /* Add some padding */
+        }
 
-.modal-content {
-    background-color: white;
-    width: 90%;
-    max-width: 800px;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-}
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
 
-.modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    flex: 1;
-}
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
     </style>
 </head>
 
@@ -600,7 +623,8 @@
                                 <td>{{ job.job_role }}</td>
                                 <td>{{ job.job_type }}</td>
                                 <td>
-                                    <span class="status {% if job.is_active == 1 %} active {% else %} inactive {% endif %}">
+                                    <span
+                                        class="status {% if job.is_active == 1 %} active {% else %} inactive {% endif %}">
                                         {% if job.is_active == 1 %} Active {% else %} Inactive {% endif %}
                                     </span>
                                 </td>
@@ -608,10 +632,10 @@
                                 <td>{{ job.application_deadline }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="action-btn btn-primary" data-id="{{ job.id }}"
-                                            onclick="viewJob('{{ job.id }}')"><i class="fas fa-eye"></i></button>
-                                        <button class="action-btn btn-success" data-id="{{ job.id }}"
-                                            onclick="editJob('{{ job.id }}')"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn btn-primary" onclick="viewJob('{{ job.id }}')"><i
+                                                class="fas fa-eye"></i></button>
+                                        <button class="action-btn btn-success" onclick="updateJob('{{ job.id }}')"><i
+                                                class="fas fa-edit"></i></button>
                                         <form action="" method="POST" style="display:inline;">
                                             {% csrf_token %}
                                             <button type="submit" class="action-btn btn-danger"><i
@@ -678,10 +702,12 @@
                                 <td>{{ application.status_changed_date|date:"Y-m-d" }}</td>
                                 <td>
                                     <div class="action-buttons">
-                                        <button class="action-btn btn-primary" onclick="viewApplication('{{ application.user }}' ,'{{ application.job.job_role }}', '{{ application.application_date }}', '{{ application.status }}' ,'{{ application.resume}}')">
+                                        <button class="action-btn btn-primary"
+                                            onclick="viewApplication('{{ application.user }}' ,'{{ application.job.job_role }}', '{{ application.application_date }}', '{{ application.status }}' ,'{{ application.resume}}')">
                                             <i class="fas fa-eye"></i> View
                                         </button>
-                                        <button class="action-btn btn-success" onclick="updateApplication('{{ application.id }}')">
+                                        <button class="action-btn btn-success"
+                                            onclick="updateApplication('{{ application.id }}')">
                                             <i class="fas fa-edit"></i> Update
                                         </button>
                                     </div>
@@ -697,7 +723,7 @@
 
     <!-- Add Job Modal -->
     <div class="modal" id="addJobModal">
-        <div class="modal-content" style="margin-top:400px;">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2>Add New Job</h2>
                 <button class="close-btn" id="closeModalBtn">&times;</button>
@@ -740,8 +766,8 @@
 
                     <div class="form-group">
                         <label for="required_skill">Required Skills:</label>
-                        <textarea name="required_skill" id="required_skill" placeholder="Required Skill"
-                            required></textarea>
+                        <textarea name="required_skill" id="required_skill" rows="3" cols="30"
+                            placeholder="Required Skill" required></textarea>
                     </div>
 
                     <div class="form-group">
@@ -767,7 +793,8 @@
 
                     <div class="form-group">
                         <label for="description">Job Description:</label>
-                        <textarea name="description" id="description" placeholder="Description"></textarea>
+                        <textarea name="description" id="description" placeholder="Description" rows="5"
+                            cols="60"></textarea>
                     </div>
 
 
@@ -781,6 +808,87 @@
                 <button type="submit" class="btn btn-success" id="saveJobBtn">Post Job</button>
             </div>
             </form>
+        </div>
+    </div>
+
+
+    <!-- View Job Modal -->
+    <div class="modal" id="viewJobModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>View Job Details</h2>
+                <button class="close-btn" id="closeJobModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="job-details"></div>
+                <div class="form-group">
+                    <label>Job Role:</label>
+                    <p id="vjobrole"></p>
+                </div>
+                <div class="form-group">
+                    <label>Job Type:</label>
+                    <p id="vjobtype"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Location</label>
+                    <p id="vlocation"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>CGPA Requirement:</label>
+                    <p id="vrequiredCGPA"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>LPA:</label>
+                    <p id="vLPA"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Required Skills:</label>
+                    <p id="vrequiredskill"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Qualification:</label>
+                    <p id="vqualification"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">Experience:</label>
+                    <p id="vexperience"></p>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="description">Job Description:</label>
+                    <p id="vdescription"></p>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="application_deadline">Application Deadline:</label>
+                    <p id="vapplicationdeadline"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="register_count">No.of Registration:</label>
+                    <p id="vregistercount"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Job Status:</label>
+                    <span id="vjobstatus"
+                    class="status {% if vjobstatus == Active %} active {% else %} inactive {% endif %}">
+                    </span>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="closeJobViewBtn">Close</button>
+            </div>
+
         </div>
     </div>
 
@@ -834,7 +942,7 @@
                 <form id="updateApplicationForm" method="POST" action="">
                     {% csrf_token %}
                     <input type="hidden" id="applicationId" name="application_id">
-                    
+
                     <div class="form-group">
                         <label for="statusUpdate">Status:</label>
                         <select id="statusUpdate" class="form-control" name="status" required>
@@ -844,7 +952,7 @@
                             <option value="Rejected">Rejected</option>
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="feedbackUpdate">Feedback:</label>
                         <textarea id="feedbackUpdate" class="form-control" name="feedback" rows="4"></textarea>
@@ -863,8 +971,126 @@
         const addJobBtn = document.getElementById('addJobBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const cancelBtn = document.getElementById('cancelBtn');
-        const modal = document.getElementById('addJobModal');
+        const addjobmodal = document.getElementById('addJobModal');
         const jobsTable = document.getElementById('jobsTable').getElementsByTagName('tbody')[0];
+
+        const viewJobModal = document.getElementById('viewJobModal');
+        const closeJobModalBtn = document.getElementById('closeJobModalBtn')
+        const closeJobViewBtn = document.getElementById('closeJobViewBtn');
+
+        addJobBtn.addEventListener('click', () => {
+            addjobmodal.style.display = 'flex';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            addjobmodal.style.display = 'none';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            addjobmodal.style.display = 'none';
+        });
+
+
+
+        closeJobViewBtn.addEventListener('click', () => {
+            viewJobModal.style.display = 'none';
+        });
+
+        closeJobModalBtn.addEventListener('click', () => {
+            viewJobModal.style.display = 'none';
+        });
+
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === addjobmodal) {
+                addjobmodal.style.display = 'none';
+            }
+            if (e.target === applicationModal) {
+                applicationModal.style.display = 'none';
+            }
+            if (e.target === updateApplicationModal) {
+                updateApplicationModal.style.display = 'none';
+            }
+        });
+
+
+        function viewJob(jobId) {
+
+            fetch(`view-job-details/${jobId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(job => {
+
+
+                    // Format date if needed
+                    const formattedDate = new Date(job.application_deadline).toLocaleDateString();
+
+                    // Populate modal
+                    document.getElementById('vjobrole').textContent = job.job_role;
+                    document.getElementById('vjobtype').textContent = job.job_type;
+                    document.getElementById('vlocation').textContent = job.location;
+                    document.getElementById('vrequiredCGPA').textContent = job.CGPA;
+                    document.getElementById('vLPA').textContent = job.LPA;
+                    document.getElementById('vrequiredskill').textContent = job.required_skill;
+                    document.getElementById('vqualification').textContent = job.qualification;
+                    document.getElementById('vexperience').textContent = job.experience;
+                    document.getElementById('vdescription').textContent = job.description;
+                    document.getElementById('vapplicationdeadline').textContent = formattedDate;
+                    document.getElementById('vregistercount').textContent = job.register_count;
+                    document.getElementById('vjobstatus').textContent = job.status;
+
+                    const vjobstatus = document.getElementById('vjobstatus');
+
+                    if (job.status === true) {
+                        vjobstatus.textContent = 'Active';
+                    } else {
+                        vjobstatus.textContent = 'Inactive';
+                    }
+
+
+
+                    // Show modal
+                    // document.getElementById('viewJobModal').style.display = 'flex';
+                    viewJobModal.style.display = 'flex';
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading job details');
+                });
+        }
+
+        //  // Function to add event listeners to action buttons in a row
+        //  function addRowEventListeners(row) {
+        //     const viewBtn = row.querySelector('.btn-primary');
+        //     const editBtn = row.querySelector('.btn-success');
+        //     const deleteBtn = row.querySelector('.btn-danger');
+
+        //     viewBtn.addEventListener('click', () => {
+        //         alert('View job details');
+        //     });
+
+        //     editBtn.addEventListener('click', () => {
+        //         alert('Edit job');
+        //     });
+
+        //     deleteBtn.addEventListener('click', (e) => {
+        //         if (!confirm('Are you sure you want to delete this job?')) {
+        //             e.preventDefault();  // stop form from submitting if user cancels
+        //         }
+        //     });
+        // }
+
+
+
+
+
+
 
         // Application modals
         const applicationModal = document.getElementById('applicationModal');
@@ -875,35 +1101,12 @@
         const cancelUpdateBtn = document.getElementById('cancelUpdateBtn');
         // const saveUpdateBtn = document.getElementById('saveUpdateBtn');
 
+
         // View toggling
         const applicationsMenuItem = document.getElementById('applicationsMenuItem');
         const dashboardView = document.getElementById('dashboardView');
         const applicationsView = document.getElementById('applicationsView');
 
-        addJobBtn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        // Close modals when clicking outside
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
-            if (e.target === applicationModal) {
-                applicationModal.style.display = 'none';
-            }
-            if (e.target === updateApplicationModal) {
-                updateApplicationModal.style.display = 'none';
-            }
-        });
 
         // Application modal controls
         closeApplicationModalBtn.addEventListener('click', () => {
@@ -922,36 +1125,12 @@
             updateApplicationModal.style.display = 'none';
         });
 
-        saveUpdateBtn.addEventListener('click', () => {
-            document.getElementById('updateApplicationForm').submit();
-        });
-
-        // Menu item active state and view switching
-        const menuItems = document.querySelectorAll('.menu-item');
-
-        menuItems.forEach(item => {
-            item.addEventListener('click', () => {
-                // Remove active class from all items
-                menuItems.forEach(i => i.classList.remove('active'));
-                // Add active class to clicked item
-                item.classList.add('active');
-                
-                // Switch views based on clicked item
-                if (item === applicationsMenuItem) {
-                    dashboardView.style.display = 'none';
-                    applicationsView.style.display = 'block';
-                } else {
-                    dashboardView.style.display = 'block';
-                    applicationsView.style.display = 'none';
-                }
-            });
-        });
 
         // Status filter functionality
-        document.getElementById('statusFilter').addEventListener('change', function() {
+        document.getElementById('statusFilter').addEventListener('change', function () {
             const status = this.value.toLowerCase().replace(' ', '');
             const rows = document.querySelectorAll('#applicationsTable tbody tr');
-            
+
             rows.forEach(row => {
                 const rowStatus = row.querySelector('.status').className.includes(status);
                 if (!status || rowStatus) {
@@ -963,26 +1142,25 @@
         });
 
         // View application details
-        function viewApplication(user,role,date,status,resume) {
+        function viewApplication(user, role, date, status, resume) {
             // In a real application, you would fetch this data from the server
             // For this example, we'll use the first application in the list
             const application = {
-                // id: applicationId,
                 applicantName: user,
                 jobRole: role,
                 appliedDate: date,
                 status: status,
                 resumeUrl: `resumes/${resume}`
             };
-            
+
             document.getElementById('applicantName').textContent = application.applicantName;
             document.getElementById('applicationJobRole').textContent = application.jobRole;
             document.getElementById('applicationDate').textContent = application.appliedDate;
             document.getElementById('applicationStatus').textContent = application.status;
-            
+
             // Set the resume iframe source
             document.getElementById('resumeIframe').src = application.resumeUrl;
-            
+
             applicationModal.style.display = 'flex';
         }
 
@@ -992,34 +1170,43 @@
             document.getElementById('applicationId').value = applicationId;
             document.getElementById('statusUpdate').value = "Under Review";
             document.getElementById('feedbackUpdate').value = "";
-            
+
             // Set the form action dynamically
             const baseUrl = "{% url 'update_application' 0 %}".replace('0', applicationId);
             document.getElementById('updateApplicationForm').action = baseUrl;
-            
+
             updateApplicationModal.style.display = 'flex';
         }
 
-        // Function to add event listeners to action buttons in a row
-        function addRowEventListeners(row) {
-            const viewBtn = row.querySelector('.btn-primary');
-            const editBtn = row.querySelector('.btn-success');
-            const deleteBtn = row.querySelector('.btn-danger');
 
-            viewBtn.addEventListener('click', () => {
-                alert('View job details');
-            });
 
-            editBtn.addEventListener('click', () => {
-                alert('Edit job');
-            });
 
-            deleteBtn.addEventListener('click', (e) => {
-                if (!confirm('Are you sure you want to delete this job?')) {
-                    e.preventDefault();  // stop form from submitting if user cancels
+
+
+
+        // Menu item active state and view switching
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                menuItems.forEach(i => i.classList.remove('active'));
+                // Add active class to clicked item
+                item.classList.add('active');
+
+                // Switch views based on clicked item
+                if (item === applicationsMenuItem) {
+                    dashboardView.style.display = 'none';
+                    applicationsView.style.display = 'block';
+                } else {
+                    dashboardView.style.display = 'block';
+                    applicationsView.style.display = 'none';
                 }
             });
-        }
+        });
+
+
+
 
         // Add event listeners to existing rows
         document.querySelectorAll('#jobsTable tbody tr').forEach(row => {

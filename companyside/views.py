@@ -1,4 +1,5 @@
 from django.shortcuts import render , redirect, get_object_or_404
+from django.http import JsonResponse
 from accounts.models import *
 from .models import *
 from django.contrib import messages
@@ -70,8 +71,8 @@ def add_job(request):
     return redirect('company_dashboard')
 
 
-def updateApplication(request,Id):
 
+def updateApplication(request,Id):
 
     if request.method == 'POST':
 
@@ -85,6 +86,29 @@ def updateApplication(request,Id):
     
     return redirect('company_dashboard')
 
+
+
+def viewJobDetails(request,job_id):
+
+    job = get_object_or_404(Joblist, id=job_id)
+    
+    data = {
+        'job_role': job.job_role,
+        'job_type': job.job_type,
+        'location': job.location,
+        'CGPA': str(job.CGPA),
+        'LPA': str(job.LPA),
+        'required_skill': job.required_skill,
+        'qualification': job.qualification,
+        'experience': job.experience,
+        'description': job.description,
+        'application_deadline': job.application_deadline.strftime('%Y-%m-%d'),
+        'register_count': job.register_count,
+        'status': job.is_active,
+    }
+    # print(data)
+    
+    return JsonResponse(data)
 
 
 # def edit_job(request, pk):

@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import *
 
 # Create your models here.
-#  
+ 
 class Joblist(models.Model):
     company = models.ForeignKey(CompanyRegister, on_delete=models.CASCADE, null=True, blank=True)
     job_role = models.CharField(max_length=300, null=True, blank=True)

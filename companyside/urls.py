@@ -7,5 +7,6 @@ urlpatterns = [
     path('logout/', logoutCompany, name='company_logout'),
 
     path('add-job/', add_job, name='add_job'),
-    path('update-application/<int:Id>',updateApplication,name='update_application')
+    path('update-application/<int:Id>',updateApplication,name='update_application'),
+    path('view-job-details/<int:job_id>/', viewJobDetails, name='view-job-details'),
 ]
