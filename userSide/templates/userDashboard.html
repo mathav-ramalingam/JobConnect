@@ -95,7 +95,7 @@
     <form id="personalInfoForm" method="POST" action="{% url 'apply_for_job' %}" class="space-y-4">
       {% csrf_token %}
 
-      <input type="text" name="job_id" id="jobIdField" value="">
+      <input type="hidden" name="job_id" id="jobIdField" value="">
 
 
       <div>

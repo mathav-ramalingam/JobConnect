@@ -142,6 +142,9 @@ STATIC_URL = 'static/'
 MEDIA_URL = '/resumes/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'resumes/')
 
+X_FRAME_OPTIONS = 'ALLOWALL'  # This allows all sites to embed the content in an iframe.
+
+
 
 
 # Default primary key field type

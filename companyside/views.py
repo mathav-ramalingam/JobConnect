@@ -26,9 +26,10 @@ def companyDashboard(request):
         return redirect('com-login')
     
 
-def logoutCompany(request):
-    request.session.flush()  # This will delete all session data, effectively logging out the user
-    return redirect('com-login')  
+def logoutCompany(request): 
+    if 'company_id' in request.session:
+        del request.session['company_id']  # Only remove company session
+    return redirect('com-login')
 
 
 
@@ -54,6 +55,8 @@ def add_job(request):
         experience = request.POST.get('experience')
         description = request.POST.get('description')
         application_deadline = request.POST.get('application_deadline')
+        register_count = request.POST.get('register_count')
+        status = request.POST.get('status')
 
         job = Joblist(
             company=company,
@@ -66,8 +69,11 @@ def add_job(request):
             qualification=qualification,
             experience=experience,
             description=description,
-            application_deadline=application_deadline
+            application_deadline=application_deadline,
+            register_count = register_count,
+            is_active = status,
         )
+        
         job.save()
         messages.success(request, 'Job posted successfully!')
         return redirect('company_dashboard')

@@ -1,262 +1,266 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Job Listings</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #eef2f3;
-                margin: 0;
-                padding: 0;
-            }
+<!DOCTYPE html>
+<html lang="en">
 
-            .navbar {
-                background-color: #004085;
-                padding: 15px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                color: white;
-                position: sticky;
-                top: 0;
-                width: 97%;
-                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-            }
-            .navbar a {
-                color: white;
-                text-decoration: none;
-                font-size: 20px;
-                font-weight: bold;
-            }
-            .sign-in {
-                background-color: #ffca28;
-                color: black;
-                padding: 10px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: bold;
-            }
-            .sign-in:hover {
-                background-color: #ffb300;
-            }
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Listings</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
 
-            .filter-container {
-                text-align: center;
-                margin: 20px 0;
-            }
-            select {
-                padding: 10px;
-                margin: 5px;
-                border-radius: 5px;
-                border: 1px solid #ccc;
-            }
+        .status.Eligible {
+            background-color: #d4edda;
+            color: #155724;
+        }
 
-            .job-list-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 20px;
-                padding: 20px;
-            }
-            .job-container {
-                background: white;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-                transition: transform 0.2s;
-            }
-            .job-container:hover {
-                transform: scale(1.05);
-            }
-            .apply-button {
-                background-color: #28a745;
-                color: white;
-                padding: 10px 15px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-weight: bold;
-            }
-            .apply-button:hover {
-                background-color: #218838;
-            }
+        .status.NotEligible {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
 
-            .user-info {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
+<body class="bg-gray-100 text-gray-900">
 
-.avatar-container {
-    position: relative;
-    margin-left: 10px;
-    cursor: pointer;
-}
+    <!-- Navbar -->
+    <nav class="bg-blue-900 text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <a href="#" class="text-xl font-bold">WELCOME to placeX</a>
 
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid white;
-}
-
-.dropdown-menu {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background-color: white;
-    color: black;
-    min-width: 120px;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    display: none;
-    flex-direction: column;
-    z-index: 10;
-}
-
-.dropdown-menu a {
-    padding: 10px 15px;
-    text-decoration: none;
-    color: black;
-    display: block;
-}
-
-.dropdown-menu a:hover {
-    background-color: #f1f1f1;
-}
-
-        </style>
-    </head>
-    <body>
-        <div class="navbar">
-            <a href="#">WELCOME to placeX</a>
-            <!-- <a href="/auth" class="sign-in">Sign In</a> -->
-
-            <!-- {% if user_logged_in %}
-            <div class="user-info">
-                <span>Welcome {{ user.name }} !</span>
-                <div class="avatar-container" onclick="toggleDropdown()">
-                    <img class="avatar" src="/static/images/thumbnail.webp" alt="Avatar">
-                    <div id="dropdown-menu" class="dropdown-menu">
-                        <a href="{% url 'profile' %}">Profile</a>
-                        <a href="/logout">Logout</a>
-                    </div>
+        {% if user_logged_in %}
+        <div class="flex items-center gap-4 relative">
+            <span>Welcome {{ user.username }}!</span>
+            <div class="relative cursor-pointer" onclick="toggleDropdown()">
+                <img src="/static/images/thumbnail.webp" alt="Avatar"
+                    class="w-10 h-10 rounded-full border-2 border-white">
+                <div id="dropdown-menu"
+                    class="hidden absolute right-0 mt-2 bg-white rounded shadow-md min-w-[120px] z-50">
+                    <a href="{% url 'profile_view' user.username %}"
+                        class="block px-4 py-2 hover:bg-gray-100 text-black">Profile</a>
+                    <a href="{% url 'user_logout' %}" class="block px-4 py-2 hover:bg-gray-100 text-black">
+                        <i class="fas fa-sign-out-alt mr-2 text-black"></i>Logout
+                    </a>
                 </div>
             </div>
-            {% else %} -->
-            <div class="signup-login">
-                <a href="users/" class="sign-in">Login</a>
-            </div>
-            <!-- {% endif %} -->
-            
         </div>
+        {% else %}
+        <a href="users/" class="bg-yellow-400 hover:bg-yellow-300 text-black font-bold px-4 py-2 rounded">Login</a>
+        {% endif %}
+    </nav>
 
-        <div class="filter-container">
-            <select id="roleFilter" onchange="filterJobs()">
-                <option value="">Filter by Role</option>
-            </select>
-            <select id="companyFilter" onchange="filterJobs()">
-                <option value="">Filter by Company</option>
-            </select>
-            <select id="locationFilter" onchange="filterJobs()">
-                <option value="">Filter by Location</option>
-            </select>
+    <!-- Filters -->
+    <div class="text-center my-6 space-x-4">
+        <select id="roleFilter" onchange="filterJobs()" class="px-4 py-2 rounded border border-gray-300">
+            <option value="">Filter by Role</option>
+        </select>
+        <select id="companyFilter" onchange="filterJobs()" class="px-4 py-2 rounded border border-gray-300">
+            <option value="">Filter by Company</option>
+        </select>
+        <select id="locationFilter" onchange="filterJobs()" class="px-4 py-2 rounded border border-gray-300">
+            <option value="">Filter by Location</option>
+        </select>
+    </div>
+
+    <!-- Job Cards -->
+    <div id="job-list" class="grid gap-6 px-6 pb-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <!-- Template Card (hidden) -->
+        <div class="job-card hidden bg-white p-6 rounded-lg shadow-lg hover:scale-[1.03] transition-transform">
+            <h2 class="status-text mb-2">
+                <span class="status">Eligible</span>
+            </h2>
+            <h2 class="job-role text-xl font-bold mb-2"></h2>
+            <p><strong>Company:</strong> <span class="company-name"></span></p>
+            <p><strong>Location:</strong> <span class="job-location"></span></p>
+            <p><strong>Required Skills:</strong> <span class="required-skill"></span></p>
+            <p><strong>Qualification:</strong> <span class="qualification"></span></p>
+            <button
+                class="apply-button mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
+                Apply
+            </button>
+
+
+
         </div>
+    </div>
 
-        <div class="job-list-container" id="job-list"></div>
 
-        <script>
-            const jobs = [
-                {% for job in job_list %}
-                {
-                    job_role: "{{ job.job_role|escapejs }}",
-                    company_name: "{{ job.company_name|escapejs }}",
-                    location: "{{ job.location|escapejs }}",
-                    required_skill: "{{ job.required_skill|escapejs }}",
-                    qualification: "{{ job.qualification|escapejs }}"
-                }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            ];
-        
-            function populateFilters() {
-                let roles = new Set(), companies = new Set(), locations = new Set();
-                jobs.forEach(job => {
-                    roles.add(job.job_role);
-                    companies.add(job.company_name);
-                    locations.add(job.location);
-                });
-        
-                function fillDropdown(id, values) {
-                    let select = document.getElementById(id);
-                    values.forEach(value => {
-                        let option = document.createElement("option");
-                        option.value = value;
-                        option.textContent = value;
-                        select.appendChild(option);
-                    });
+    <!-- Apply Modal -->
+    <div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-2xl font-bold mb-4">Apply for <span id="jobRoleTitle">Job</span></h2>
+
+            <form id="personalInfoForm" method="POST" action="{% url 'apply_for_job' %}" class="space-y-4">
+                {% csrf_token %}
+
+                <input type="hidden" name="job_id" id="jobIdField" value="" class="hidden">
+
+
+                <div>
+                    <label for="user_name" class="block font-medium">Username:</label>
+                    <input type="text" id="user_name" name="user_name" value="{{ user.username }}" disabled
+                        class="w-full border border-gray-300 rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label for="companyField" class="block font-medium">Company:</label>
+                    <input type="text" id="companyField" name="company_name" value="" disabled
+                        class="w-full border border-gray-300 rounded px-3 py-2">
+                </div>
+
+                <div>
+                    <label for="jobRoleField" class="block font-medium">Job Role:</label>
+                    <input type="text" id="jobRoleField" name="job_role" value=""
+                        class="w-full border border-gray-300 rounded px-3 py-2">
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeApplyModal()"
+                        class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Confirm
+                        Apply</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <script>
+
+        const jobs = [
+            {% for job in job_list %}
+        {
+            job_id: "{{ job.id }}",
+                job_role: "{{ job.job_role|escapejs }}",
+                    company_name: "{{ job.company|escapejs }}",
+                        location: "{{ job.location|escapejs }}",
+                            required_skill: "{{ job.required_skill|escapejs }}",
+                                qualification: "{{ job.qualification|escapejs }}",
+                                    required_cgpa: "{{ job.CGPA }}"
+        } {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+];
+        const user_cgpa = parseFloat("{{ user_profile.ug_cgpa|default:0 }}");
+
+        function createJobCard(job) {
+            const template = document.querySelector(".job-card");
+            if (!template) return;
+
+            const jobCard = template.cloneNode(true);
+            jobCard.classList.remove("hidden");
+
+            jobCard.querySelector(".job-role").textContent = job.job_role;
+            jobCard.querySelector(".company-name").textContent = job.company_name;
+            jobCard.querySelector(".job-location").textContent = job.location;
+            jobCard.querySelector(".required-skill").textContent = job.required_skill;
+            jobCard.querySelector(".qualification").textContent = job.qualification;
+
+            const statusSpan = jobCard.querySelector(".status");
+            if (user_cgpa >= parseFloat(job.required_cgpa)) {
+                statusSpan.textContent = "Eligible";
+                statusSpan.classList.add("Eligible");
+                statusSpan.classList.remove("NotEligible");
+            } else {
+                statusSpan.textContent = "Not Eligible";
+                statusSpan.classList.add("NotEligible");
+                statusSpan.classList.remove("Eligible");
+            }
+
+            // 💥 Attach the click event to "Apply" button
+            const applyButton = jobCard.querySelector(".apply-button");
+            const userLoggedIn = "{{ user_logged_in|yesno:'true,false' }}" === "true";
+
+            applyButton.addEventListener("click", function () {
+                if (userLoggedIn) {
+                    console.log(job.job_id);
+                    // applyForJob(job.job_role, job.required_cgpa, job.company_name, job.job_id);
+                } else {
+                    window.location.href = "users/";
                 }
-        
-                fillDropdown("roleFilter", roles);
-                fillDropdown("companyFilter", companies);
-                fillDropdown("locationFilter", locations);
-            }
-        
-            function renderJobs(filteredJobs = jobs) {
-                const jobList = document.getElementById("job-list");
-                jobList.innerHTML = filteredJobs.map(job => `
-                    <div class="job-container">
-                        <h2>${job.job_role}</h2>
-                        <p><strong>Company:</strong> ${job.company_name}</p>
-                        <p><strong>Location:</strong> ${job.location}</p>
-                        <p><strong>Required Skills:</strong> ${job.required_skill}</p>
-                        <p><strong>Qualification:</strong> ${job.qualification}</p>
-                        <button class="apply-button" onclick="redirectToSignIn()">Apply</button>
-                    </div>
-                `).join('');
-            }
-        
-            function filterJobs() {
-                let role = document.getElementById("roleFilter").value;
-                let company = document.getElementById("companyFilter").value;
-                let location = document.getElementById("locationFilter").value;
-        
-                let filteredJobs = jobs.filter(job =>
-                    (!role || job.job_role === role) &&
-                    (!company || job.company_name === company) &&
-                    (!location || job.location === location)
-                );
-        
-                renderJobs(filteredJobs);
-            }
-
-            function redirectToSignIn() {
-            window.location.href = "/auth/";
-            }
-
-            function redirectToprofile() {
-            window.location.href = "profile";
-            }
-
-        
-            document.addEventListener("DOMContentLoaded", () => {
-                populateFilters();
-                renderJobs();
             });
 
-            function toggleDropdown() {
-            const dropdown = document.getElementById("dropdown-menu");
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+
+            return jobCard;
+        }
+
+        function populateFilters() {
+            const roles = new Set(), companies = new Set(), locations = new Set();
+            jobs.forEach(job => {
+                roles.add(job.job_role);
+                companies.add(job.company_name);
+                locations.add(job.location);
+            });
+
+            function fillDropdown(id, values) {
+                const select = document.getElementById(id);
+                values.forEach(value => {
+                    const option = document.createElement("option");
+                    option.value = value;
+                    option.textContent = value;
+                    select.appendChild(option);
+                });
             }
 
-            document.addEventListener("click", function (e) {
-            const dropdown = document.getElementById("dropdown-menu");
-            const avatarContainer = document.querySelector(".avatar-container");
-            if (dropdown && avatarContainer && !avatarContainer.contains(e.target)) {
-            dropdown.style.display = "none";
-            }
+            fillDropdown("roleFilter", roles);
+            fillDropdown("companyFilter", companies);
+            fillDropdown("locationFilter", locations);
+        }
+
+        function filterJobs() {
+            const role = document.getElementById("roleFilter").value;
+            const company = document.getElementById("companyFilter").value;
+            const location = document.getElementById("locationFilter").value;
+
+            const filteredJobs = jobs.filter(job =>
+                (!role || job.job_role === role) &&
+                (!company || job.company_name === company) &&
+                (!location || job.location === location)
+            );
+
+            renderJobs(filteredJobs);
+        }
+
+        function renderJobs(filteredJobs = jobs) {
+            const jobList = document.getElementById("job-list");
+            if (!jobList) return;
+
+            // Remove only the dynamic cards, keep the hidden template
+            jobList.querySelectorAll(".job-card:not(.hidden)").forEach(card => card.remove());
+
+            filteredJobs.forEach(job => {
+                const card = createJobCard(job);
+                if (card) {
+                    jobList.appendChild(card);
+                }
             });
-        </script>
-    </body>
-    </html>
+        }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById("dropdown-menu");
+            dropdown.classList.toggle("hidden");
+        }
+
+        document.addEventListener("click", (e) => {
+            const dropdown = document.getElementById("dropdown-menu");
+            const avatar = document.querySelector(".relative.cursor-pointer");
+            if (dropdown && avatar && !avatar.contains(e.target)) {
+                if (!dropdown.classList.contains("hidden")) {
+                    dropdown.classList.add("hidden");
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            populateFilters();
+            renderJobs();
+        });
+    </script>
+</body>
+
+</html>

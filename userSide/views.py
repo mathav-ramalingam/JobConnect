@@ -32,13 +32,14 @@ def userDashboard(request):
         return redirect('user-login')
     
 
-def logoutUser(request):
-    request.session.flush()  # This will delete all session data, effectively logging out the user
-    return redirect('user-login')  
+def logoutUser(request): 
+    if 'user_id' in request.session:
+        del request.session['user_id']  # Only remove user session
+    return redirect('user-login')
 
 
 @api_view(["GET", "POST"])
-def profile_view(request, username):
+def   profile_view(request, username):
 
     if not username:
         return redirect('user-login')

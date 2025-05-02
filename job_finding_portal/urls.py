@@ -24,6 +24,7 @@ urlpatterns = [
     path('', include('accounts.urls')),  # Your 'accounts' app URLs
     path('company/', include('companyside.urls')), 
     path('user/',include('userSide.urls')),
+    # path()
 ]
 
 if settings.DEBUG:

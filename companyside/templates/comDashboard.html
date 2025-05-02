@@ -802,6 +802,19 @@
                         <label for="application_deadline">Application Deadline:</label>
                         <input type="date" name="application_deadline" id="application_deadline" required>
                     </div>
+
+                    <div class="form-group">
+                        <label for="register_count ">Register Count:</label>
+                        <input type="number" name="register_count" id="register_count" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Active Status:</label>
+                        <select id="status" class="form-control" name="status" required>
+                            <option value="True">Active</option>
+                            <option value="False">Inactive</option>
+                        </select>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" id="cancelBtn">Cancel</button>
@@ -882,7 +895,6 @@
                     <span id="vjobstatus"
                         class="status {% if vjobstatus == Active %} active {% else %} inactive {% endif %}">
                     </span>
-
                 </div>
             </div>
             <div class="modal-footer">
@@ -1335,6 +1347,7 @@
         function viewApplication(user, role, date, status, resume) {
             // In a real application, you would fetch this data from the server
             // For this example, we'll use the first application in the list
+            console.log(resume)
             const application = {
                 applicantName: user,
                 jobRole: role,
