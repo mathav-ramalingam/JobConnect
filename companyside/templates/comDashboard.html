@@ -894,14 +894,14 @@
 
 
     <!-- Edit Job Modal -->
-    <div class="modal" id="editJobModal">
+    <div class="modal" id="editJobModal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Edit Job Job</h2>
                 <button class="close-btn" id="closeeditModalBtn">&times;</button>
             </div>
             <div class="modal-body">
-                <form method="POST" id="editjobForm" action="">
+                <form method="POST" id="editjobForm">
                     {% csrf_token %}
 
                     <div class="form-group">
@@ -932,13 +932,13 @@
 
                     <div class="form-group">
                         <label for="LPA">LPA:</label>
-                        <input type="text" id="edit_LPA" class="form-control" name="edit_LPA"
-                            required>
+                        <input type="text" id="edit_LPA" class="form-control" name="edit_LPA" required>
                     </div>
 
                     <div class="form-group">
                         <label for="required_skill">Required Skills:</label>
-                        <textarea name="edit_required_skill" id="edit_required_skill" rows="3" cols="30" required></textarea>
+                        <textarea name="edit_required_skill" id="edit_required_skill" rows="3" cols="30"
+                            required></textarea>
                     </div>
 
                     <div class="form-group">
@@ -964,8 +964,7 @@
 
                     <div class="form-group">
                         <label for="description">Job Description:</label>
-                        <textarea name="edit_description" id="edit_description" rows="5"
-                            cols="60"></textarea>
+                        <textarea name="edit_description" id="edit_description" rows="5" cols="60"></textarea>
                     </div>
 
 
@@ -988,7 +987,7 @@
                     </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" id="canceleditBtn">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
                 <button type="submit" class="btn btn-success" id="saveJobBtn">Post Job</button>
             </div>
             </form>
@@ -1083,7 +1082,7 @@
 
 
         const editJobModal = document.getElementById('editJobModal');
-        const canceleditBtn = document.getElementById('canceleditBtn');
+        // const canceleditBtn = document.getElementById('canceleditBtn');
         const closeeditModalBtn = document.getElementById("closeeditModalBtn")
 
         addJobBtn.addEventListener('click', () => {
@@ -1109,9 +1108,9 @@
         });
 
 
-        canceleditBtn.addEventListener('click', () => {
-            editJobModal.style.display = 'none';
-        });
+        // canceleditBtn.addEventListener('click', () => {
+        //     editJobModal.style.display = 'none';
+        // });
 
         closeeditModalBtn.addEventListener('click', () => {
             editJobModal.style.display = 'none';
@@ -1134,7 +1133,7 @@
 
         function viewJob(jobId) {
 
-            fetch(`view-job-details/${jobId}`)
+            fetch(`edit-job-details/${jobId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -1169,9 +1168,7 @@
                     }
 
 
-
                     // Show modal
-                    // document.getElementById('viewJobModal').style.display = 'flex';
                     viewJobModal.style.display = 'flex';
 
                 })
@@ -1186,7 +1183,7 @@
         function editJob(jobId) {
             console.log(jobId)
 
-            fetch(`view-job-details/${jobId}`)
+            fetch(`edit-job-details/${jobId}/`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -1195,8 +1192,9 @@
                 })
                 .then(job => {
 
-                    const formattedDate = new Date(job.application_deadline).toLocaleDateString();
-                    
+                    // const formattedDate = new Date(job.application_deadline).toLocaleDateString();
+                    const formattedDate = new Date(job.application_deadline).toISOString().split('T')[0];
+
                     console.log(`iam : ${formattedDate}`)
                     // Populate form fields
                     document.getElementById('edit_job_role').value = job.job_role;
@@ -1214,20 +1212,48 @@
 
 
 
-
                     // Update form action
                     const form = document.getElementById('editjobForm');
-                    form.action = `/edit-job-details/${jobId}/`;
+                    form.setAttribute('data-job-id', jobId);
 
                     // Show modal
                     editJobModal.style.display = 'flex';
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error loading job details');
+                    alert('Error: ' + error.message);
                 });
         }
 
+
+        // Handle form submission
+        document.getElementById('editjobForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const jobId = this.getAttribute('data-job-id');
+            const formData = new FormData(this);
+
+            fetch(`edit-job-details/${jobId}/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.success || 'Updated!');
+                    editJobModal.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Update error:', error);
+                    alert('Error updating job');
+                });
+        });
+
+
+        function closeModal() {
+            document.getElementById('editJobModal').style.display = 'none';
+        }
 
         //  // Function to add event listeners to action buttons in a row
         //  function addRowEventListeners(row) {

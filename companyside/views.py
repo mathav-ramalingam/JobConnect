@@ -76,38 +76,38 @@ def add_job(request):
 
 
 
-def viewJobDetails(request,job_id):
+# def viewJobDetails(request,job_id):
 
-    job = get_object_or_404(Joblist, id=job_id)
+#     job = get_object_or_404(Joblist, id=job_id)
     
-    data = {
-        'job_role': job.job_role,
-        'job_type': job.job_type,
-        'location': job.location,
-        'CGPA': str(job.CGPA),
-        'LPA': str(job.LPA),
-        'required_skill': job.required_skill,
-        'qualification': job.qualification,
-        'experience': job.experience,
-        'description': job.description,
-        'application_deadline': job.application_deadline.strftime('%Y-%m-%d'),
-        'register_count': job.register_count,
-        'status': job.is_active,
-    }
-    print(data)
+#     data = {
+#         'job_role': job.job_role,
+#         'job_type': job.job_type,
+#         'location': job.location,
+#         'CGPA': str(job.CGPA),
+#         'LPA': str(job.LPA),
+#         'required_skill': job.required_skill,
+#         'qualification': job.qualification,
+#         'experience': job.experience,
+#         'description': job.description,
+#         'application_deadline': job.application_deadline.strftime('%Y-%m-%d'),
+#         'register_count': job.register_count,
+#         'status': job.is_active,
+#     }
+#     # print(data)
     
-    return JsonResponse(data)
+#     return JsonResponse(data)
 
 
 @api_view(["GET", "POST"])
 def editJobDetails(request, job_id):
 
-    company_id = request.session.get('job_id')
+    company_id = request.session.get('company_id')
     if not company_id:
         return redirect('com-login')  # Redirect to login if no company session
 
     job = get_object_or_404(Joblist, id=job_id)  # Ensure the job belongs to the logged-in company
-    print("hi")
+    # print("hi")
 
     if request.method == 'POST':
 
@@ -124,9 +124,10 @@ def editJobDetails(request, job_id):
         job.register_count = request.POST.get('edit_register_count',job.register_count)
         job.is_active = request.POST.get('edit_is_active',job.is_active)
 
+        print("Post method")
+
         job.save()
-        messages.success(request, 'Job updated successfully!')
-        return redirect('company_dashboard')
+        return JsonResponse({'success': 'Job updated successfully'})
     
     elif request.method == 'GET':
         data = {
@@ -145,7 +146,7 @@ def editJobDetails(request, job_id):
         'status': job.is_active,
         }
 
-        print(data)
+        # print(data)
         return JsonResponse(data)
     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
