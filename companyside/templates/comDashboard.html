@@ -1071,12 +1071,13 @@
                         <label for="feedbackUpdate">Feedback:</label>
                         <textarea id="feedbackUpdate" class="form-control" name="feedback" rows="4"></textarea>
                     </div>
-                </form>
+                
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger" id="cancelUpdateBtn">Cancel</button>
-                <button type="submit" class="btn btn-success" id="saveUpdateBtn">Save Changes</button>
+                <button type="submit" class="btn btn-success">Save Changes</button>
             </div>
+        </form>
         </div>
     </div>
 
@@ -1372,7 +1373,7 @@
             // In a real application, you would fetch the current status and feedback
             document.getElementById('applicationId').value = applicationId;
             document.getElementById('statusUpdate').value = "Under Review";
-            document.getElementById('feedbackUpdate').value = "hi";
+            document.getElementById('feedbackUpdate').value = "we will contact shortly";
 
             // Set the form action dynamically
             const baseUrl = "{% url 'update_application' 0 %}".replace('0', applicationId);

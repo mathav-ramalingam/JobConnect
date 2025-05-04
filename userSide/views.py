@@ -22,10 +22,11 @@ def userDashboard(request):
     try:
         user = UserRegister.objects.get(id=user_id)
         user_profile,  created = UserProfile.objects.get_or_create(user=user)
+        applied_jobs = JobApplication.objects.filter(user=user)
         joblist = Joblist.objects.all()
         print(joblist)
 
-        context = {'user_logged_in' : True,'user':user, 'job_list' : joblist, "user_profile":user_profile, 'resume_uploaded': bool(user_profile.resume)}
+        context = {'user_logged_in' : True,'user':user, 'job_list' : joblist, "user_profile":user_profile, 'resume_uploaded': bool(user_profile.resume),'applied_jobs':applied_jobs}
         return render(request, 'userDashboard.html', context)
     
     except UserRegister.DoesNotExist:
@@ -39,7 +40,7 @@ def logoutUser(request):
 
 
 @api_view(["GET", "POST"])
-def   profile_view(request, username):
+def profile_view(request, username):
 
     if not username:
         return redirect('user-login')
@@ -177,6 +178,18 @@ def upload_resume(request,username):
     
 
 
+def registercount(job_id):
+
+        job = Joblist.objects.get(id=job_id)
+
+        if job.register_count < 5:
+            job.register_count += 1
+        else:
+            job.is_active = False
+        
+        job.save()
+
+
 def applyingJob(request):
 
     user_id = request.session.get('user_id')
@@ -205,6 +218,8 @@ def applyingJob(request):
             resume=user_resume
         )
         application.save()
+
+        registercount(job_id)
 
 
         return redirect('user_dashboard')  # or wherever you want after applying

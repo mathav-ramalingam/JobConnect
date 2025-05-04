@@ -79,70 +79,83 @@
       <p><strong>Qualification:</strong> <span class="qualification"></span></p>
       <button class="apply-button mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
         Apply
-    </button>
-    
+      </button>
+
 
 
     </div>
   </div>
 
 
- <!-- Apply Modal -->
-<div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-    <h2 class="text-2xl font-bold mb-4">Apply for <span id="jobRoleTitle">Job</span></h2>
+  <!-- Apply Modal -->
+  <div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+      <h2 class="text-2xl font-bold mb-4">Apply for <span id="jobRoleTitle">Job</span></h2>
 
-    <form id="personalInfoForm" method="POST" action="{% url 'apply_for_job' %}" class="space-y-4">
-      {% csrf_token %}
+      <form id="personalInfoForm" method="POST" action="{% url 'apply_for_job' %}" class="space-y-4">
+        {% csrf_token %}
 
-      <input type="hidden" name="job_id" id="jobIdField" value="">
+        <input type="hidden" name="job_id" id="jobIdField" value="">
 
 
-      <div>
-        <label for="user_name" class="block font-medium">Username:</label>
-        <input type="text" id="user_name" name="user_name" value="{{ user.username }}" disabled
-               class="w-full border border-gray-300 rounded px-3 py-2">
-      </div>
+        <div>
+          <label for="user_name" class="block font-medium">Username:</label>
+          <input type="text" id="user_name" name="user_name" value="{{ user.username }}" disabled
+            class="w-full border border-gray-300 rounded px-3 py-2">
+        </div>
 
-      <div>
-        <label for="companyField" class="block font-medium">Company:</label>
-        <input type="text" id="companyField" name="company_name" value="" disabled
-               class="w-full border border-gray-300 rounded px-3 py-2">
-      </div>
+        <div>
+          <label for="companyField" class="block font-medium">Company:</label>
+          <input type="text" id="companyField" name="company_name" value="" disabled
+            class="w-full border border-gray-300 rounded px-3 py-2">
+        </div>
 
-      <div>
-        <label for="jobRoleField" class="block font-medium">Job Role:</label>
-        <input type="text" id="jobRoleField" name="job_role" value="" 
-               class="w-full border border-gray-300 rounded px-3 py-2">
-      </div>
+        <div>
+          <label for="jobRoleField" class="block font-medium">Job Role:</label>
+          <input type="text" id="jobRoleField" name="job_role" value=""
+            class="w-full border border-gray-300 rounded px-3 py-2">
+        </div>
 
-      <div class="flex justify-end gap-2">
-        <button type="button" onclick="closeApplyModal()"
-                class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-        <button type="submit"
-                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Confirm Apply</button>
-      </div>
-    </form>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeApplyModal()"
+            class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Confirm
+            Apply</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 
 
 
   <script>
-    
+
     const jobs = [
-  {% for job in job_list %}
-  {
-    job_id: "{{ job.id }}",
-    job_role: "{{ job.job_role|escapejs }}",
-    company_name: "{{ job.company|escapejs }}",
-    location: "{{ job.location|escapejs }}",
-    required_skill: "{{ job.required_skill|escapejs }}",
-    qualification: "{{ job.qualification|escapejs }}",
-    required_cgpa: "{{ job.CGPA }}"
-  }{% if not forloop.last %},{% endif %}
-  {% endfor %}
+      {% for job in job_list %}
+    {
+      job_id: "{{ job.id }}",
+        job_role: "{{ job.job_role|escapejs }}",
+          company_name: "{{ job.company|escapejs }}",
+            location: "{{ job.location|escapejs }}",
+              required_skill: "{{ job.required_skill|escapejs }}",
+                qualification: "{{ job.qualification|escapejs }}",
+                  required_cgpa: "{{ job.CGPA }}",
+                    is_active : "{{ job.is_active }}",
+      application_deadline: "{{ job.application_deadline }}"
+    } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
 ];
+
+    const applied_jobs = [
+      {% for ap_job in applied_jobs %}
+    {
+      job: "{{ap_job.job.id}}",
+        company : "{{ ap_job.company }}"
+
+    } {% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  ];
+
     const user_cgpa = parseFloat("{{ user_profile.ug_cgpa|default:0 }}");
 
     function createJobCard(job) {
@@ -170,11 +183,38 @@
       }
 
       // 💥 Attach the click event to "Apply" button
-  const applyButton = jobCard.querySelector(".apply-button");
-  applyButton.addEventListener("click", function() {
-    console.log(job.job_id);
-    applyForJob(job.job_role, job.required_cgpa, job.company_name, job.job_id);
-  });
+      const applyButton = jobCard.querySelector(".apply-button");
+
+      // Check if this job is already applied
+      const alreadyApplied = applied_jobs.some(applied => applied.job == job.job_id);
+
+      const deadline = new Date(job.application_deadline);
+      const today = new Date();
+
+      if (alreadyApplied) {
+        applyButton.disabled = true;
+        applyButton.classList.remove("bg-green-600", "hover:bg-green-700");
+        applyButton.classList.add("bg-blue-300", "cursor-not-allowed");
+        applyButton.textContent = "Already Applied";
+      }
+      else if (job.is_active === false || job.is_active === "False") {
+        applyButton.disabled = true;
+        applyButton.classList.remove("bg-green-600", "hover:bg-green-700");
+        applyButton.classList.add("bg-gray-400", "cursor-not-allowed");
+        applyButton.textContent = "Job Temporarily Closed";
+      }
+      else if (today > deadline) {
+        applyButton.disabled = true;
+        applyButton.classList.remove("bg-green-600", "hover:bg-green-700");
+        applyButton.classList.add("bg-red-300", "cursor-not-allowed");
+        applyButton.textContent = "Deadline Passed";
+      }
+      else {
+        applyButton.addEventListener("click", function () {
+          console.log(job.job_id);
+          applyForJob(job.job_role, job.required_cgpa, job.company_name, job.job_id);
+        });
+      }
 
       return jobCard;
     }
@@ -263,13 +303,13 @@
       twelfthPercentage: "{{ user_profile.twelfth_percentage|default:'' }}",
       ugCgpa: "{{ user_profile.ug_cgpa|default:'' }}",
       backlogsHistory: "{{ user_profile.backlogs_history|default:'' }}",
-      resume : "{{ user_profile.resume|default:'' }}"
+      resume: "{{ user_profile.resume|default:'' }}"
     };
 
     function isProfileComplete() {
       for (const field in requiredFields) {
         if (!requiredFields[field] || requiredFields[field] === "None") {
-          return field;   
+          return field;
         }
       }
       return true;
@@ -280,22 +320,22 @@
       window.location.href = `{% url 'profile_view' user.username %}?highlight=${field}`;
     }
 
-    function applyForJob(jobRole, requiredCgpa , company , job_id) {
-  const missingField = isProfileComplete();
-  if (missingField !== true) {
-    redirectToProfile(missingField);
-  } else {
-    if (user_cgpa >= parseFloat(requiredCgpa)) {
-      openApplyModal(jobRole,company, job_id);
-    } else {
-      alert(`Required CGPA for ${jobRole} is ${requiredCgpa}`);
+    function applyForJob(jobRole, requiredCgpa, company, job_id) {
+      const missingField = isProfileComplete();
+      if (missingField !== true) {
+        redirectToProfile(missingField);
+      } else {
+        if (user_cgpa >= parseFloat(requiredCgpa)) {
+          openApplyModal(jobRole, company, job_id);
+        } else {
+          alert(`Required CGPA for ${jobRole} is ${requiredCgpa}`);
+        }
+      }
     }
-  }
-}
 
 
 
-    function openApplyModal(jobRole,company,job_id) {
+    function openApplyModal(jobRole, company, job_id) {
       document.getElementById("companyField").value = company;
       document.getElementById("jobRoleField").value = jobRole;
       document.getElementById("jobIdField").value = job_id;
