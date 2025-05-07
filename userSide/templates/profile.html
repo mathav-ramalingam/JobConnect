@@ -181,7 +181,6 @@
     .close-btn {
         margin-left: auto;
         margin-bottom: auto;
-        background: #6ded5a;
         color: rgb(0, 0, 0);
         border: none;
         padding: 0.5rem 1rem;
@@ -190,9 +189,7 @@
         transition: background 0.3s;
     }
 
-    .close-btn:hover {
-        background: #0ad929;
-    }
+
 
     .close-btn a {
         text-decoration-style: none;
@@ -507,7 +504,10 @@
                     <h1 id="fullName">{{ user.username }} </h1>
                     <p>{{ user_profile.about_me }}</p>
                 </div>
-                <a href="{% url 'user_dashboard' %}" class="close-btn">return to home</a>
+                <a href="{% url 'user_dashboard' %}" class="close-btn"><img
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAXhJREFUSEvt1r8vBUEQwPHva1BoVILC6/wDOpVCp9GJSKgJ/wL+BIlQSkhQ6URUKn+AVkXhRynRSBTcJLOy1t7bnXVyzbvm3rvs3Gdmbm/e69DS0WnJpRSWuCVN+gT4tBZQAkuMYIuKnWkSJtwKh6gr1IxbYFl7BCyr9qDnST0fAyu5bc+Fw0ofgRkFb4AJa9tz4DrUr9iMp+AU6p6xtNuE94Jz0SK8DraiZjwGl6ImPIT/imbjPhwbDjvVnbat41DXS9yWF/tjyPiwDAYZAv7RJCz3lfl+Kh98eAE4/2d4HrgIYfk+BYwB15qAX/EAsFG9r3PAUJDgO3AF7AEfkVbPAk9VxXcuru51cr80PnwIrCae9z6wHoF/ORb4DRgGZFTeBwl0AZler8BI03CsC873d7ArJnbtO19LxX3Yf8z9Vks3ijbXCzBaOKPDsGdgPLxYt6s3q/dxtyF4rSriIBeWddM6HgcLE5AxegncxuJT/7kKzXRYa/AXg/aCH31NgGkAAAAASUVORK5CYII=" /></a>
+
+
             </div>
 
         </div>
@@ -697,9 +697,9 @@
                     <label for="editGender">Gender:</label>
                     <select id="editGender" name="editGender" required>
                         <option value="">Select Gender</option>
-                        <option value="Male" {% if user_profile.gender == 'Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if user_profile.gender == 'Female' %}selected{% endif %}>Female</option>
-                        <option value="Other" {% if user_profile.gender == 'Other' %}selected{% endif %}>Other</option>
+                        <option value="Male" {% if user_profile.gender=='Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if user_profile.gender=='Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if user_profile.gender=='Other' %}selected{% endif %}>Other</option>
                     </select>
                 </div>
 
@@ -766,9 +766,9 @@
                 <div class="form-group">
                     <label for="editBacklogsHistory">Backlogs History:</label>
                     <select id="editBacklogsHistory" name="editBacklogsHistory">
-                        <option value="">Select YES/NO</option> 
-                        <option value="No" {% if user_profile.backlogs_history == 'No' %}selected{% endif %}>NO</option>
-                        <option value="Yes" {% if user_profile.backlogs_history == 'Yes' %}selected{% endif %}>YES
+                        <option value="">Select YES/NO</option>
+                        <option value="No" {% if user_profile.backlogs_history=='No' %}selected{% endif %}>NO</option>
+                        <option value="Yes" {% if user_profile.backlogs_history=='Yes' %}selected{% endif %}>YES
                         </option>
                     </select>
                 </div>

@@ -31,7 +31,7 @@
 
   <!-- Navbar -->
   <nav class="bg-blue-900 text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
-    <a href="#" class="text-xl font-bold">WELCOME to placeX</a>
+    <a href="#" class="text-xl font-bold">JOB CONNECT</a>
 
     {% if user_logged_in %}
     <div class="flex items-center gap-4 relative">
@@ -141,7 +141,7 @@
                 qualification: "{{ job.qualification|escapejs }}",
                   required_cgpa: "{{ job.CGPA }}",
                     is_active : "{{ job.is_active }}",
-      application_deadline: "{{ job.application_deadline }}"
+                      application_deadline: "{{ job.application_deadline }}"
     } {% if not forloop.last %}, {% endif %}
     {% endfor %}
 ];
