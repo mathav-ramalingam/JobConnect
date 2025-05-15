@@ -697,9 +697,9 @@
                     <label for="editGender">Gender:</label>
                     <select id="editGender" name="editGender" required>
                         <option value="">Select Gender</option>
-                        <option value="Male" {% if user_profile.gender=='Male' %}selected{% endif %}>Male</option>
-                        <option value="Female" {% if user_profile.gender=='Female' %}selected{% endif %}>Female</option>
-                        <option value="Other" {% if user_profile.gender=='Other' %}selected{% endif %}>Other</option>
+                        <option value="Male" {% if user_profile.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Female" {% if user_profile.gender == 'Female' %}selected{% endif %}>Female</option>
+                        <option value="Other" {% if user_profile.gender == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                 </div>
 
@@ -767,8 +767,8 @@
                     <label for="editBacklogsHistory">Backlogs History:</label>
                     <select id="editBacklogsHistory" name="editBacklogsHistory">
                         <option value="">Select YES/NO</option>
-                        <option value="No" {% if user_profile.backlogs_history=='No' %}selected{% endif %}>NO</option>
-                        <option value="Yes" {% if user_profile.backlogs_history=='Yes' %}selected{% endif %}>YES
+                        <option value="No" {% if user_profile.backlogs_history == 'No' %}selected{% endif %}>NO</option>
+                        <option value="Yes" {% if user_profile.backlogs_history == 'Yes' %}selected{% endif %}>YES
                         </option>
                     </select>
                 </div>
